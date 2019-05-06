@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "924567787871",
+    "firebase_url": "https://calisthenics4-b338c.firebaseio.com",
+    "project_id": "calisthenics4-b338c",
+    "storage_bucket": "calisthenics4-b338c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924567787871:android:6aff0c7cef67c211",
+        "android_client_info": {
+          "package_name": "com.hylux.calisthenics4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924567787871-8levhm2vjtamrqbuf6nlk5ne3mo07npo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7Lc7E7bb-qqRDkuoYZP6ErW8Awv0uziM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924567787871-8levhm2vjtamrqbuf6nlk5ne3mo07npo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

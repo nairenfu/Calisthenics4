@@ -1,9 +1,12 @@
 package com.hylux.calisthenics4.workoutview;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +18,21 @@ import com.hylux.calisthenics4.objects.Exercise;
 
 public class ExerciseDetailsFragment extends Fragment {
 
+    private StartWorkoutCallback startWorkoutCallback;
+
     private String exerciseId;
     private Exercise exercise;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            startWorkoutCallback = (StartWorkoutCallback) context;
+        } catch (Exception e) {
+            Log.e("CALLBACK", "Implement StartWorkoutCallback");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +54,22 @@ public class ExerciseDetailsFragment extends Fragment {
         TextView nameView = rootView.findViewById(R.id.exerciseName);
         nameView.setText(exerciseId);
         //TODO Either on swipe image change step as well, or a RecyclerView/List of image-step pair
+
+        FloatingActionButton startWorkoutButton = rootView.findViewById(R.id.startWorkoutButton);
+        startWorkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startWorkoutCallback.startWorkout();
+            }
+        });
+
         return rootView;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        startWorkoutCallback = null;
     }
 
     public static ExerciseDetailsFragment newInstance(String exerciseId) {

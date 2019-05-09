@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Set;
@@ -47,6 +48,15 @@ public class RoutineOverviewFragment extends Fragment {
 
         adapter = new SetAdapter(routine, exerciseNamesMap);
         recyclerView.setAdapter(adapter);
+
+        Button activateButton = rootView.findViewById(R.id.activatButton);
+        activateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         return rootView;
     }

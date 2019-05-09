@@ -1,6 +1,7 @@
 package com.hylux.calisthenics4.workoutview;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -49,12 +50,21 @@ public class RoutineOverviewFragment extends Fragment {
         adapter = new SetAdapter(routine, exerciseNamesMap);
         recyclerView.setAdapter(adapter);
 
-        Button activateButton = rootView.findViewById(R.id.activatButton);
+        Button activateButton = rootView.findViewById(R.id.activateButton);
         activateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
                 adapter.notifyDataSetChanged();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem() + 1, 8);
+                    }
+                }, 200);
+                if (((SetAdapter) adapter).getActiveItem() >= routine.size()) {
+                    ((SetAdapter) adapter).setActiveItem(-1);
+                }
             }
         });
 

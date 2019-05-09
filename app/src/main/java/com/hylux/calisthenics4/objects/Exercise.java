@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Exercise {
 
     public static final ArrayList<String> EQUIPMENT = new ArrayList<>(Arrays.asList("NOTHING", "PULL_UP_BAR"));
-    public static final ArrayList<String> TARGET_GROUP = new ArrayList<>(Arrays.asList("UPPER_BODY", "LOWER_BODY"));
+    public static final ArrayList<String> TARGET_GROUP = new ArrayList<>(Arrays.asList("NONE", "UPPER_BODY", "LOWER_BODY"));
 
     private String name, id, aim;
     private ArrayList<String> steps, images;

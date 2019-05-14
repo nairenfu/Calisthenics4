@@ -104,6 +104,10 @@ public class Workout implements Parcelable {
         this.routine = routine;
     }
 
+    public void setActualReps(int actualReps, int position) {
+        routine.get(position).setActualReps(actualReps);
+    }
+
     public ArrayList<Integer> getEquipments() {
         return equipments;
     }

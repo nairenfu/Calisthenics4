@@ -1,11 +1,10 @@
 package com.hylux.calisthenics4.workoutview;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +20,25 @@ import java.util.HashMap;
 
 public class RoutineOverviewFragment extends Fragment {
 
+    private RoutineOverviewFragmentListener actualRepsCallback;
+
     private ArrayList<Set> routine;
     HashMap<String, String> exerciseNamesMap;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            actualRepsCallback = (RoutineOverviewFragmentListener) context;
+        } catch (Exception e) {
+            Log.e("CALLBACK", "Implement ActualRepsCallback");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +60,7 @@ public class RoutineOverviewFragment extends Fragment {
         layoutManager = new RoutineRecyclerLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new SetAdapter(routine, exerciseNamesMap);
+        adapter = new SetAdapter(routine, exerciseNamesMap, actualRepsCallback);
         recyclerView.setAdapter(adapter);
 
         Button activateButton = rootView.findViewById(R.id.activateButton);
@@ -71,6 +83,12 @@ public class RoutineOverviewFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        actualRepsCallback = null;
+    }
+
     public static RoutineOverviewFragment newInstance(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {
 
         Bundle args = new Bundle();
@@ -80,5 +98,9 @@ public class RoutineOverviewFragment extends Fragment {
         RoutineOverviewFragment fragment = new RoutineOverviewFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    interface RoutineOverviewFragmentListener {
+        void setActualReps(int actualReps, int position);
     }
 }

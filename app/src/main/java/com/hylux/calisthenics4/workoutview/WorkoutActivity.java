@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class WorkoutActivity extends FragmentActivity implements DatabaseCallback, StartWorkoutCallback {
+public class WorkoutActivity extends FragmentActivity implements DatabaseCallback, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener {
 
     private ArrayList<Fragment> fragments;
     private ViewPager viewPager;
@@ -123,8 +123,15 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
     public void startWorkout() {
         fragments.add(RoutineFragment.newInstance());
         pagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(fragments.size() - 1, true);
+        viewPager.setCurrentItem(1, true);
+        workout.setStartTime(System.currentTimeMillis());
 
         ((ToggleSwipeViewPager) viewPager).setCanSwipe(false);
+    }
+
+    @Override
+    public void setActualReps(int actualReps, int position) {
+        workout.setActualReps(actualReps, position);
+        Log.d("WORKOUT", workout.toString());
     }
 }

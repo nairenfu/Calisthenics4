@@ -2,6 +2,7 @@ package com.hylux.calisthenics4.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 public class Set implements Parcelable {
 
@@ -67,5 +68,15 @@ public class Set implements Parcelable {
         dest.writeString(exerciseId);
         dest.writeInt(targetReps);
         dest.writeInt(actualReps);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Set{" +
+                "exerciseId='" + exerciseId + '\'' +
+                ", targetReps=" + targetReps +
+                ", actualReps=" + actualReps +
+                '}';
     }
 }

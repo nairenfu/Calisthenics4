@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 public class ExpandingRecyclerView extends RecyclerView {
+
+    private boolean allowScroll = true;
 
     public ExpandingRecyclerView(@NonNull Context context) {
         super(context);
@@ -20,7 +23,21 @@ public class ExpandingRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
     }
 
-    public void expandItem(int position) {
-        Adapter adapter = getAdapter();
+    public boolean isAllowScroll() {
+        return allowScroll;
     }
+
+    public void setAllowScroll(boolean allowScroll) {
+        this.allowScroll = allowScroll;
+    }
+
+    @Override
+    public void onScrolled(int dx, int dy) {
+        Log.d("onScrolled", String.valueOf(allowScroll));
+        if (allowScroll) {
+            super.onScrolled(dx, dy);
+        }
+    }
+
+
 }

@@ -49,6 +49,8 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
             workout = Debug.debugWorkout(); //TODO Change
         }
 
+        //TODO Set flag OK once all data in
+        //TODO What to do if not found
         uniqueExercises = new ArrayList<>();
         for (Set set : workout.getRoutine()) {
             if (!uniqueExercises.contains(set.getExerciseId())) {

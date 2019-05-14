@@ -1,7 +1,7 @@
 package com.hylux.calisthenics4.workoutview;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +15,6 @@ import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
@@ -29,11 +28,12 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
     static class SetViewHolder extends RecyclerView.ViewHolder {
 
         private TextView exerciseNameView, repsView;
-        private View expandedView;
+        private View itemView, expandedView;
         private Button nextButton;
 
         SetViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView = itemView;
             exerciseNameView = itemView.findViewById(R.id.exerciseName);
             repsView = itemView.findViewById(R.id.reps);
             expandedView = itemView.findViewById(R.id.expandedView);
@@ -58,8 +58,10 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
         void setVisible(boolean visible) {
             if (visible) {
+                itemView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
                 expandedView.setVisibility(View.VISIBLE);
             } else {
+                itemView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
                 expandedView.setVisibility(View.GONE);
             }
         }
@@ -87,7 +89,6 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
                 Log.d("EXPANDED", "CLICK");
                 setActiveItem(setViewHolder.getAdapterPosition() + 1);
                 notifyDataSetChanged();
-                Objects.requireNonNull(recyclerView.getLayoutManager()).scrollToPosition(setViewHolder.getAdapterPosition() + 1);
             }
         });
         if (activeItem == position) {

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class RoutineOverviewFragment extends Fragment {
 
         recyclerView = rootView.findViewById(R.id.setRecycler);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new RoutineRecyclerLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new SetAdapter(routine, exerciseNamesMap);
@@ -55,15 +56,14 @@ public class RoutineOverviewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
+                if (((SetAdapter) adapter).getActiveItem() != -1) {
+                    ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
+                }
                 adapter.notifyDataSetChanged();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem() + 1, 8);
-                    }
-                }, 200);
+                ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem(), 0);
                 if (((SetAdapter) adapter).getActiveItem() >= routine.size()) {
                     ((SetAdapter) adapter).setActiveItem(-1);
+                    ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(true);
                 }
             }
         });

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class RoutineOverviewFragment extends Fragment {
+public class RoutineOverviewFragment extends Fragment implements NextWorkoutCallback {
 
     private RoutineOverviewFragmentListener actualRepsCallback;
 
@@ -63,34 +63,14 @@ public class RoutineOverviewFragment extends Fragment {
         layoutManager = new RoutineRecyclerLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new SetAdapter(routine, exerciseNamesMap, actualRepsCallback);
+        adapter = new SetAdapter(routine, exerciseNamesMap, this);
         recyclerView.setAdapter(adapter);
 
         nextButton = rootView.findViewById(R.id.activateButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    EditText editActualRepsView = Objects.requireNonNull(layoutManager
-                            .findViewByPosition(((SetAdapter) adapter)
-                                    .getActiveItem()))
-                            .findViewById(R.id.editActualReps);
-                    int actualReps = Integer.valueOf(editActualRepsView.getText().toString());
-                    actualRepsCallback.setActualReps(actualReps, ((SetAdapter) adapter).getActiveItem());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
-                if (((SetAdapter) adapter).getActiveItem() != -1) {
-                    ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
-                }
-                adapter.notifyDataSetChanged();
-                ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem(), 0);
-
-                if (((SetAdapter) adapter).getActiveItem() >= routine.size()) {
-                    ((SetAdapter) adapter).setActiveItem(-1);
-                    ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(true);
-                }
+                next();
             }
         });
 
@@ -120,6 +100,31 @@ public class RoutineOverviewFragment extends Fragment {
         RoutineOverviewFragment fragment = new RoutineOverviewFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void next() {
+        try {
+            EditText editActualRepsView = Objects.requireNonNull(layoutManager
+                    .findViewByPosition(((SetAdapter) adapter)
+                            .getActiveItem()))
+                    .findViewById(R.id.editActualReps);
+            int actualReps = Integer.valueOf(editActualRepsView.getText().toString());
+            actualRepsCallback.setActualReps(actualReps, ((SetAdapter) adapter).getActiveItem());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
+        if (((SetAdapter) adapter).getActiveItem() != -1) {
+            ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
+        }
+        adapter.notifyDataSetChanged();
+        ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem(), 0);
+
+        if (((SetAdapter) adapter).getActiveItem() >= routine.size()) {
+            ((SetAdapter) adapter).setActiveItem(-1);
+            ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(true);
+        }
     }
 
     interface RoutineOverviewFragmentListener {

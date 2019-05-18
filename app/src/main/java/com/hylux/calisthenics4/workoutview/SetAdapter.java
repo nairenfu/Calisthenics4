@@ -1,5 +1,6 @@
 package com.hylux.calisthenics4.workoutview;
 
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -17,17 +18,20 @@ import java.util.HashMap;
 
 public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
+    private NextWorkoutCallback listener;
+
     private int activeItem = -1;
 
     private ArrayList<Set> routine;
     private HashMap<String, String> exerciseNamesMap;
 
+    private CountDownTimer timer = null;
+
     static class SetViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView exerciseNameView, repsView;
+        private TextView exerciseNameView, repsView, timeView;
         private View itemView, expandedView;
         private EditText editActualRepsView;
-//        private Button nextButton;
 
         SetViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -36,7 +40,7 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
             repsView = itemView.findViewById(R.id.reps);
             expandedView = itemView.findViewById(R.id.expandedView);
             editActualRepsView = expandedView.findViewById(R.id.editActualReps);
-//            nextButton = expandedView.findViewById(R.id.nextButton);
+            timeView = expandedView.findViewById(R.id.timeView);
         }
 
         void setExerciseName(String exerciseName) {
@@ -55,13 +59,9 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
             return Integer.valueOf(editActualRepsView.getText().toString());
         }
 
-//        Button getNextButton() {
-//            return nextButton;
-//        }
-//
-//        void setNextButton(Button nextButton) {
-//            this.nextButton = nextButton;
-//        }
+        void setTimeView(String time) {
+            timeView.setText(time);
+        }
 
         void setVisible(boolean visible) {
             if (visible) {
@@ -74,9 +74,11 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
         }
     }
 
-    SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, RoutineOverviewFragment.RoutineOverviewFragmentListener actualRepsCallback) {
+    SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, NextWorkoutCallback listener) {
         this.routine = routine;
         this.exerciseNamesMap = exerciseNamesMap;
+
+        this.listener = listener;
     }
 
     @NonNull
@@ -88,27 +90,38 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final SetAdapter.SetViewHolder setViewHolder, int position) {
-        //Dude asks me to use getAdapterPosition in onClick but it doesn't work... WHYYYYYYY
-        setViewHolder.setExerciseName(exerciseNamesMap.get(routine.get(position).getExerciseId()));
-        setViewHolder.setReps(routine.get(position).getTargetReps());
-        setViewHolder.setActualReps(routine.get(position).getTargetReps());
-//        setViewHolder.getNextButton().setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                Log.d("EXPANDED", "CLICK");
-////                setActiveItem(setViewHolder.getAdapterPosition() + 1);
-////                actualRepsCallback.setActualReps(setViewHolder.getActualReps(), setViewHolder.getAdapterPosition());
-////                notifyDataSetChanged();
-////                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-////                assert layoutManager != null;
-//////                layoutManager.scrollToPositionWithOffset(position + 1, 0);
-////            }
-////        });
+        String setId = routine.get(position).getExerciseId();
+        setViewHolder.setExerciseName(exerciseNamesMap.get(setId));
+
+        int targetReps = routine.get(position).getTargetReps();
+        setViewHolder.setReps(targetReps);
+        setViewHolder.setActualReps(targetReps);
+
         if (activeItem == position) {
             setViewHolder.setVisible(true);
+            if (setId.equals("PXgTd7HydzIJhD8goXj9")) { //if setId is rest
+                timer = new CountDownTimer((long) targetReps * 1000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        setViewHolder.setTimeView((int) millisUntilFinished/1000 + "s");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        listener.next();
+                    }
+                };
+                timer.start();
+            }
         } else {
             setViewHolder.setVisible(false);
         }
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        listener = null;
     }
 
     @Override
@@ -122,5 +135,9 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
     void setActiveItem(int activeItem) {
         this.activeItem = activeItem;
+        if (timer != null) { //Prevent memory leak
+            timer.cancel();
+            timer = null;
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.hylux.calisthenics4.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.hylux.calisthenics4.Utility;
 
@@ -39,6 +40,7 @@ public class Workout implements Parcelable {
 //        }
     }
 
+    @SuppressWarnings("unchecked") //Clearly defined data types
     public Workout(Parcel in) {
         id = in.readString();
         name = in.readString();
@@ -46,7 +48,7 @@ public class Workout implements Parcelable {
         brief = in.readString();
         routine = new ArrayList<>();
         in.readTypedList(routine, Set.CREATOR);
-        equipments = in.readArrayList(Integer.class.getClassLoader()); //TODO How to fix???
+        equipments = in.readArrayList(Integer.class.getClassLoader()); 
         targetGroups = in.readArrayList(Integer.class.getClassLoader());
         startTime = in.readLong();
         endTime = in.readLong();
@@ -158,6 +160,7 @@ public class Workout implements Parcelable {
         dest.writeValue(endTime);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Workout{" +

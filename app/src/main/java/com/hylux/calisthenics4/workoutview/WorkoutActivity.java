@@ -121,8 +121,6 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
 
     @Override
     public void startWorkout() {
-//        fragments.add(RoutineFragment.newInstance());
-//        pagerAdapter.notifyDataSetChanged();
         Log.d("START", "WORKOUT");
         viewPager.setCurrentItem(1, true);
         workout.setStartTime(System.currentTimeMillis());

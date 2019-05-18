@@ -1,5 +1,7 @@
 package com.hylux.calisthenics4.objects;
 
+import android.support.annotation.NonNull;
+
 import com.hylux.calisthenics4.Utility;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class Exercise {
         this.targetGroups = targetGroups;
     }
 
+    @SuppressWarnings("unchecked") //Clearly defined data types
     public Exercise(HashMap<String, Object> data) {
         this.id = (String) data.get("id");
         this.name = (String) data.get("name");
@@ -96,6 +99,7 @@ public class Exercise {
         this.targetGroups = targetGroups;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Exercise{" +

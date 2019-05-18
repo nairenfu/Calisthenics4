@@ -8,7 +8,7 @@ public class RoutineRecyclerLayoutManager extends LinearLayoutManager {
 
     private boolean scrollEnabled = true;
 
-    public RoutineRecyclerLayoutManager(Context context) {
+    RoutineRecyclerLayoutManager(Context context) {
         super(context);
     }
 
@@ -24,7 +24,7 @@ public class RoutineRecyclerLayoutManager extends LinearLayoutManager {
         return scrollEnabled;
     }
 
-    public void setScrollEnabled(boolean scrollEnabled) {
+    void setScrollEnabled(boolean scrollEnabled) {
         this.scrollEnabled = scrollEnabled;
     }
 

@@ -43,6 +43,7 @@ public class RoutineOverviewFragment extends Fragment implements NextWorkoutCall
         }
     }
 
+    @SuppressWarnings("unchecked") //Clearly defined data type
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

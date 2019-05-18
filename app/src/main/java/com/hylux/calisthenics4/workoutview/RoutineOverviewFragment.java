@@ -11,12 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class RoutineOverviewFragment extends Fragment {
 
@@ -25,9 +27,10 @@ public class RoutineOverviewFragment extends Fragment {
     private ArrayList<Set> routine;
     HashMap<String, String> exerciseNamesMap;
 
-    private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private Button nextButton;
 
     @Override
     public void onAttach(Context context) {
@@ -55,7 +58,7 @@ public class RoutineOverviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_routine_overview, container, false);
 
-        recyclerView = rootView.findViewById(R.id.setRecycler);
+        RecyclerView recyclerView = rootView.findViewById(R.id.setRecycler);
         recyclerView.setHasFixedSize(true);
         layoutManager = new RoutineRecyclerLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -63,16 +66,27 @@ public class RoutineOverviewFragment extends Fragment {
         adapter = new SetAdapter(routine, exerciseNamesMap, actualRepsCallback);
         recyclerView.setAdapter(adapter);
 
-        Button activateButton = rootView.findViewById(R.id.activateButton);
-        activateButton.setOnClickListener(new View.OnClickListener() {
+        nextButton = rootView.findViewById(R.id.activateButton);
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    EditText editActualRepsView = Objects.requireNonNull(layoutManager
+                            .findViewByPosition(((SetAdapter) adapter)
+                                    .getActiveItem()))
+                            .findViewById(R.id.editActualReps);
+                    int actualReps = Integer.valueOf(editActualRepsView.getText().toString());
+                    actualRepsCallback.setActualReps(actualReps, ((SetAdapter) adapter).getActiveItem());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
                 if (((SetAdapter) adapter).getActiveItem() != -1) {
                     ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
                 }
                 adapter.notifyDataSetChanged();
                 ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem(), 0);
+
                 if (((SetAdapter) adapter).getActiveItem() >= routine.size()) {
                     ((SetAdapter) adapter).setActiveItem(-1);
                     ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(true);
@@ -87,6 +101,14 @@ public class RoutineOverviewFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         actualRepsCallback = null;
+    }
+
+    public void activate() {
+        //BUG adapter is null on cold start. May apply to switching application
+        ((SetAdapter) adapter).setActiveItem(0);
+        ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
+        adapter.notifyDataSetChanged();
+        nextButton.setVisibility(View.VISIBLE);
     }
 
     public static RoutineOverviewFragment newInstance(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {

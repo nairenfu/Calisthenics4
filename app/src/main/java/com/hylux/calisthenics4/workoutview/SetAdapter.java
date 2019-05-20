@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
-    private NextWorkoutCallback listener;
+    private NextSetCallback listener;
 
     private int activeItem = -1;
 
@@ -74,7 +74,7 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
         }
     }
 
-    SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, NextWorkoutCallback listener) {
+    SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, NextSetCallback listener) {
         this.routine = routine;
         this.exerciseNamesMap = exerciseNamesMap;
 

@@ -133,4 +133,11 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
         workout.setActualReps(actualReps, position);
         Log.d("WORKOUT", workout.toString());
     }
+
+    @Override
+    public void onWorkoutEnded(long endTime) {
+        workout.setEndTime(endTime);
+
+        finish();
+    }
 }

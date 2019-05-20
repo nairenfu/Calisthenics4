@@ -1,5 +1,5 @@
 package com.hylux.calisthenics4.workoutview;
 
-public interface NextWorkoutCallback {
+public interface NextSetCallback {
     void next();
 }

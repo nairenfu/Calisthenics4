@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class RoutineOverviewFragment extends Fragment implements NextWorkoutCallback {
+public class RoutineOverviewFragment extends Fragment implements NextSetCallback {
 
-    private RoutineOverviewFragmentListener actualRepsCallback;
+    private RoutineOverviewFragmentListener routineOverviewFragmentListener;
 
     private ArrayList<Set> routine;
     HashMap<String, String> exerciseNamesMap;
@@ -37,7 +37,7 @@ public class RoutineOverviewFragment extends Fragment implements NextWorkoutCall
         super.onAttach(context);
 
         try {
-            actualRepsCallback = (RoutineOverviewFragmentListener) context;
+            routineOverviewFragmentListener = (RoutineOverviewFragmentListener) context;
         } catch (Exception e) {
             Log.e("CALLBACK", "Implement ActualRepsCallback");
         }
@@ -71,7 +71,12 @@ public class RoutineOverviewFragment extends Fragment implements NextWorkoutCall
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                next();
+                int currentItem = ((SetAdapter) adapter).getActiveItem();
+                if (currentItem == routine.size() - 1) {
+                    routineOverviewFragmentListener.onWorkoutEnded(System.currentTimeMillis());
+                } else {
+                    next();
+                }
             }
         });
 
@@ -81,7 +86,7 @@ public class RoutineOverviewFragment extends Fragment implements NextWorkoutCall
     @Override
     public void onDetach() {
         super.onDetach();
-        actualRepsCallback = null;
+        routineOverviewFragmentListener = null;
     }
 
     public void activate() {
@@ -111,7 +116,7 @@ public class RoutineOverviewFragment extends Fragment implements NextWorkoutCall
                             .getActiveItem()))
                     .findViewById(R.id.editActualReps);
             int actualReps = Integer.valueOf(editActualRepsView.getText().toString());
-            actualRepsCallback.setActualReps(actualReps, ((SetAdapter) adapter).getActiveItem());
+            routineOverviewFragmentListener.setActualReps(actualReps, ((SetAdapter) adapter).getActiveItem());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,5 +135,7 @@ public class RoutineOverviewFragment extends Fragment implements NextWorkoutCall
 
     interface RoutineOverviewFragmentListener {
         void setActualReps(int actualReps, int position);
+
+        void onWorkoutEnded(long endTime);
     }
 }

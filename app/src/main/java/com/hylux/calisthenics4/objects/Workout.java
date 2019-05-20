@@ -2,7 +2,7 @@ package com.hylux.calisthenics4.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.hylux.calisthenics4.Utility;
 

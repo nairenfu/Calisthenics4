@@ -1,6 +1,6 @@
 package com.hylux.calisthenics4.objects;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.hylux.calisthenics4.Utility;
 

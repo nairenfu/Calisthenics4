@@ -3,18 +3,26 @@ package com.hylux.calisthenics4.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.hylux.calisthenics4.Utility;
 
 import java.util.ArrayList;
 
+@Entity(tableName = "activities")
 public class Workout implements Parcelable {
 
     private String id, name, authorId, brief;
     private ArrayList<Set> routine;
+    @Ignore
     private ArrayList<Integer> equipments, targetGroups;
-    private Long startTime, endTime;
+    @PrimaryKey
+    private Long startTime;
+    private Long endTime;
 
+    @Ignore
     public Workout(String name, String brief) {
         this.id = Utility.randomId(15);
 
@@ -26,6 +34,7 @@ public class Workout implements Parcelable {
         targetGroups = new ArrayList<>();
     }
 
+    @Ignore
     public Workout(String name, String brief, ArrayList<Set> routine) {
         this.name = name;
         this.brief = brief;
@@ -40,6 +49,18 @@ public class Workout implements Parcelable {
 //        }
     }
 
+    public Workout(String name, String brief, ArrayList<Set> routine, Long startTime, Long endTime) {
+        this.name = name;
+        this.brief = brief;
+        this.routine = routine;
+        this.startTime = startTime;
+        this.endTime = endTime;
+
+        equipments = new ArrayList<>();
+        targetGroups = new ArrayList<>();
+    }
+
+    @Ignore
     @SuppressWarnings("unchecked") //Clearly defined data types
     public Workout(Parcel in) {
         id = in.readString();

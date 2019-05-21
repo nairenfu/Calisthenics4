@@ -2,6 +2,8 @@ package com.hylux.calisthenics4;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,11 +12,17 @@ import android.widget.Button;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hylux.calisthenics4.homeview.RecentActivitiesFragment;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
+import com.hylux.calisthenics4.roomdatabase.ActivitiesDatabase;
+import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
+import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 import com.hylux.calisthenics4.workoutview.WorkoutActivity;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +41,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //Firebase Firestore database for templates
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         addExercise(Debug.debugExercise(), database);
+
+        //Room database for actual activities
+        ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
+        ActivitiesViewModel activitiesViewModel = new ActivitiesViewModel(getApplication());
+
+        activitiesViewModel.getRecentActivities(5,this);
     }
 
     private void addExercise(Exercise exercise, final FirebaseFirestore database) {
@@ -62,5 +76,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    @Override
+    public ArrayList<Workout> onGetRecentActivities(ArrayList<Workout> activities) {
+        RecentActivitiesFragment fragment = RecentActivitiesFragment.newInstance(activities);
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().add(R.id.fragmentContainer, fragment, "raf").commit();
+        return activities;
     }
 }

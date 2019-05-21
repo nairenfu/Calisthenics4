@@ -1,6 +1,8 @@
 package com.hylux.calisthenics4;
 
 import android.content.Intent;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,13 +24,23 @@ import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 import com.hylux.calisthenics4.workoutview.WorkoutActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener {
+
+    public static final int NEW_WORKOUT_REQUEST = 0;
+
+    private RecentActivitiesFragment fragment;
+    private OnTaskCompletedListener onTaskCompletedListener;
+
+    private ActivitiesViewModel activitiesViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        onTaskCompletedListener = this;
 
         final Button debugButton = findViewById(R.id.debugButton);
         debugButton.setOnClickListener(new View.OnClickListener() { //TODO Maybe can replace with lambda
@@ -36,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
                 Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
                 Workout debugWorkout = Debug.debugWorkout();
                 debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
-                startActivity(debugActivityIntent);
-
+//                startActivity(debugActivityIntent);
+                startActivityForResult(debugActivityIntent, NEW_WORKOUT_REQUEST);
             }
         });
 
@@ -47,9 +60,33 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
         //Room database for actual activities
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
-        ActivitiesViewModel activitiesViewModel = new ActivitiesViewModel(getApplication());
+        activitiesViewModel = new ActivitiesViewModel(getApplication());
+
+        //Initialise RecentActivitiesFragment
+        fragment = RecentActivitiesFragment.newInstance(new ArrayList<Workout>());
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().add(R.id.fragmentContainer, fragment, "raf").commit();
 
         activitiesViewModel.getRecentActivities(5,this);
+
+        final ImageButton refreshButton = findViewById(R.id.refreshButton);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("REFRESH", "onClick()");
+                activitiesViewModel.getRecentActivities(5, onTaskCompletedListener);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == NEW_WORKOUT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Workout activity = Objects.requireNonNull(data).getParcelableExtra("EXTRA_WORKOUT");
+                activitiesViewModel.insert(activity);
+            }
+        }
     }
 
     private void addExercise(Exercise exercise, final FirebaseFirestore database) {
@@ -80,9 +117,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
     @Override
     public ArrayList<Workout> onGetRecentActivities(ArrayList<Workout> activities) {
-        RecentActivitiesFragment fragment = RecentActivitiesFragment.newInstance(activities);
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.fragmentContainer, fragment, "raf").commit();
+
+        if (fragment != null) {
+            fragment.setActivities(activities);
+        }
         return activities;
     }
 }

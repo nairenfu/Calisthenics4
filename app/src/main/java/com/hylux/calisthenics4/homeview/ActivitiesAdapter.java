@@ -50,4 +50,21 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Ac
     public int getItemCount() {
         return activities.size();
     }
+
+    public ArrayList<Workout> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(ArrayList<Workout> activities) {
+        this.activities = activities;
+        notifyDataSetChanged();
+    }
+
+    public void addActivity(Workout activity, int position) {
+        //TODO auto sort position
+        activities.add(position, activity);
+        notifyDataSetChanged();
+    }
+
+    //TODO Add multiple activities, sorted by recent
 }

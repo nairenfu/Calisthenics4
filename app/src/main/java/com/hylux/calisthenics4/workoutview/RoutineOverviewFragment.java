@@ -86,6 +86,7 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d("ROUTINE_OVERVIEW_FRAG", "onDetach()");
         routineOverviewFragmentListener = null;
     }
 

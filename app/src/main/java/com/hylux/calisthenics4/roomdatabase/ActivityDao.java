@@ -7,7 +7,6 @@ import androidx.room.Query;
 
 import com.hylux.calisthenics4.objects.Workout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao

@@ -2,6 +2,7 @@ package com.hylux.calisthenics4.roomdatabase;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -38,6 +39,13 @@ class ActivitiesRepository {
             activityDao.insert(params[0]);
             return null;
         }
+
+        //DEBUGGING ONLY
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Log.d("INSERT", "DONE");
+        }
     }
 
     //Get n recent activities
@@ -63,6 +71,7 @@ class ActivitiesRepository {
         protected void onPostExecute(List<Workout> activities) {
             super.onPostExecute(activities);
             ArrayList<Workout> activitiesArray = (ArrayList<Workout>) activities;
+            Log.d("GET_RECENT_ACT", activities.toString());
             onTaskCompletedListener.onGetRecentActivities(activitiesArray);
         }
     }

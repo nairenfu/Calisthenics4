@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -138,6 +140,10 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
     public void onWorkoutEnded(long endTime) {
         workout.setEndTime(endTime);
 
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("EXTRA_WORKOUT", workout);
+        setResult(RESULT_OK, resultIntent);
         finish();
+
     }
 }

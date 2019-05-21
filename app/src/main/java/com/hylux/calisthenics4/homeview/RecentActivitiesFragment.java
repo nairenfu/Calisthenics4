@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class RecentActivitiesFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private ActivitiesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private ArrayList<Workout> activities;
@@ -45,11 +45,11 @@ public class RecentActivitiesFragment extends Fragment {
         //Set up RecyclerView
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
-        recyclerView.setLayoutManager(layoutManager);
         layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(adapter);
         adapter = new ActivitiesAdapter(activities);
+        recyclerView.setAdapter(adapter);
 
         return rootView;
     }
@@ -62,5 +62,14 @@ public class RecentActivitiesFragment extends Fragment {
         RecentActivitiesFragment fragment = new RecentActivitiesFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public ArrayList<Workout> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(ArrayList<Workout> activities) {
+        this.activities = activities;
+        adapter.setActivities(activities);
     }
 }

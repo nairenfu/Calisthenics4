@@ -4,7 +4,10 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,12 +18,14 @@ import android.widget.ImageButton;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hylux.calisthenics4.homeview.ChooseWorkoutFragment;
 import com.hylux.calisthenics4.homeview.RecentActivitiesFragment;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesDatabase;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
 import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
+import com.hylux.calisthenics4.workoutview.SwipeViewPagerAdapter;
 import com.hylux.calisthenics4.workoutview.WorkoutActivity;
 
 import java.util.ArrayList;
@@ -31,28 +36,31 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     public static final int NEW_WORKOUT_REQUEST = 0;
 
     private RecentActivitiesFragment fragment;
-    private OnTaskCompletedListener onTaskCompletedListener;
+//    private OnTaskCompletedListener onTaskCompletedListener;
 
     private ActivitiesViewModel activitiesViewModel;
+
+    private ArrayList<Fragment> fragments;
+    private ViewPager viewPager;
+    private PagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        onTaskCompletedListener = this;
+//        onTaskCompletedListener = this;
 
-        final Button debugButton = findViewById(R.id.debugButton);
-        debugButton.setOnClickListener(new View.OnClickListener() { //TODO Maybe can replace with lambda
-            @Override
-            public void onClick(View v) {
-                Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
-                Workout debugWorkout = Debug.debugWorkout();
-                debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
-//                startActivity(debugActivityIntent);
-                startActivityForResult(debugActivityIntent, NEW_WORKOUT_REQUEST);
-            }
-        });
+//        final Button debugButton = findViewById(R.id.debugButton);
+//        debugButton.setOnClickListener(new View.OnClickListener() { //TODO Maybe can replace with lambda
+//            @Override
+//            public void onClick(View v) {
+//                Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
+//                Workout debugWorkout = Debug.debugWorkout();
+//                debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
+//                startActivityForResult(debugActivityIntent, NEW_WORKOUT_REQUEST);
+//            }
+//        });
 
         //Firebase Firestore database for templates
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -62,21 +70,27 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
         activitiesViewModel = new ActivitiesViewModel(getApplication());
 
-        //Initialise RecentActivitiesFragment
-        fragment = RecentActivitiesFragment.newInstance(new ArrayList<Workout>());
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.fragmentContainer, fragment, "raf").commit();
+        //Instantiate fragments
+        fragments = new ArrayList<>();
+        fragments.add(RecentActivitiesFragment.newInstance(new ArrayList<Workout>()));
+        fragments.add(ChooseWorkoutFragment.newInstance());
+
+        //Set up SwipeViewPager
+        viewPager = findViewById(R.id.swipeViewPager);
+        adapter = new SwipeViewPagerAdapter(getSupportFragmentManager(), fragments);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(1);
 
         activitiesViewModel.getRecentActivities(5,this);
 
-        final ImageButton refreshButton = findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("REFRESH", "onClick()");
-                activitiesViewModel.getRecentActivities(5, onTaskCompletedListener);
-            }
-        });
+//        final ImageButton refreshButton = findViewById(R.id.refreshButton);
+//        refreshButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("REFRESH", "onClick()");
+//                activitiesViewModel.getRecentActivities(5, onTaskCompletedListener);
+//            }
+//        });
     }
 
     @Override
@@ -118,8 +132,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     @Override
     public ArrayList<Workout> onGetRecentActivities(ArrayList<Workout> activities) {
 
-        if (fragment != null) {
-            fragment.setActivities(activities);
+        if (fragments.get(1).getClass() == RecentActivitiesFragment.class) {
+            ((RecentActivitiesFragment) fragments.get(1)).setActivities(activities);
         }
         return activities;
     }

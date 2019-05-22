@@ -72,7 +72,7 @@ public class ExerciseDetailsFragment extends Fragment {
         startWorkoutCallback = null;
     }
 
-    public static ExerciseDetailsFragment newInstance(String exerciseId) {
+    static ExerciseDetailsFragment newInstance(String exerciseId) {
 
         Bundle args = new Bundle();
         args.putString("EXTRA_EXERCISE_ID", exerciseId);

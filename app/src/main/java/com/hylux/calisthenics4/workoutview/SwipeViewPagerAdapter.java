@@ -10,7 +10,7 @@ public class SwipeViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Fragment> fragments;
 
-    SwipeViewPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
+    public SwipeViewPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
         super(fm);
 
         this.fragments = fragments;

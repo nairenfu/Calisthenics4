@@ -25,7 +25,7 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
     private RoutineOverviewFragmentListener routineOverviewFragmentListener;
 
     private ArrayList<Set> routine;
-    HashMap<String, String> exerciseNamesMap;
+    private HashMap<String, String> exerciseNamesMap;
 
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -90,7 +90,7 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
         routineOverviewFragmentListener = null;
     }
 
-    public void activate() {
+    void activate() {
         //BUG adapter is null on cold start. May apply to switching application
         ((SetAdapter) adapter).setActiveItem(0);
         ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
@@ -98,7 +98,7 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
         nextButton.setVisibility(View.VISIBLE);
     }
 
-    public static RoutineOverviewFragment newInstance(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {
+    static RoutineOverviewFragment newInstance(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {
 
         Bundle args = new Bundle();
         args.putParcelableArrayList("EXTRA_ROUTINE", routine);

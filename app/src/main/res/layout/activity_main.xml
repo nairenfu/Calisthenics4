@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <com.hylux.calisthenics4.workoutview.ToggleSwipeViewPager
         android:id="@+id/swipeViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

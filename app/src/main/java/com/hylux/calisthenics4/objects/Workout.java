@@ -23,6 +23,15 @@ public class Workout implements Parcelable {
     private Long endTime;
 
     @Ignore
+    public Workout() {
+        this.id = Utility.randomId(15);
+
+        routine = new ArrayList<>();
+        equipments = new ArrayList<>();
+        targetGroups = new ArrayList<>();
+    }
+
+    @Ignore
     public Workout(String name, String brief) {
         this.id = Utility.randomId(15);
 

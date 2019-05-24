@@ -5,20 +5,19 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hylux.calisthenics4.homeview.ChooseWorkoutFragment;
+import com.hylux.calisthenics4.homeview.CreateWorkoutFragment;
 import com.hylux.calisthenics4.homeview.RecentActivitiesFragment;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
@@ -26,6 +25,7 @@ import com.hylux.calisthenics4.roomdatabase.ActivitiesDatabase;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
 import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 import com.hylux.calisthenics4.workoutview.SwipeViewPagerAdapter;
+import com.hylux.calisthenics4.workoutview.ToggleSwipeViewPager;
 import com.hylux.calisthenics4.workoutview.WorkoutActivity;
 
 import java.util.ArrayList;
@@ -34,9 +34,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener {
 
     public static final int NEW_WORKOUT_REQUEST = 0;
-
-    private RecentActivitiesFragment fragment;
-//    private OnTaskCompletedListener onTaskCompletedListener;
 
     private ActivitiesViewModel activitiesViewModel;
 
@@ -74,12 +71,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         fragments = new ArrayList<>();
         fragments.add(RecentActivitiesFragment.newInstance(new ArrayList<Workout>()));
         fragments.add(ChooseWorkoutFragment.newInstance());
+        fragments.add(CreateWorkoutFragment.newInstance());
 
         //Set up SwipeViewPager
         viewPager = findViewById(R.id.swipeViewPager);
         adapter = new SwipeViewPagerAdapter(getSupportFragmentManager(), fragments);
+        //TODO disallow drag if on create workout.
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(2);
+        ((ToggleSwipeViewPager) viewPager).setCanSwipe(false);
 
         activitiesViewModel.getRecentActivities(5,this);
 

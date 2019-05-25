@@ -5,7 +5,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".homeview.CreateWorkoutFragment">
+    tools:context=".createworkoutview.CreateWorkoutActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/setupCard"
@@ -119,10 +119,21 @@
                 android:layout_width="64dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
-                android:visibility="visible"
-                android:alpha="0"/>
+                android:alpha="0"
+                android:visibility="visible" />
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/finishButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_play_arrow_black_48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

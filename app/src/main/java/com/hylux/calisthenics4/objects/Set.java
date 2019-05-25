@@ -6,8 +6,16 @@ import androidx.annotation.NonNull;
 
 public class Set implements Parcelable {
 
+    private static final int DEFAULT_REPS = 10;
+
     private String exerciseId;
     private int targetReps, actualReps;
+
+    public Set(String exerciseId) {
+        this.exerciseId = exerciseId;
+        this.targetReps = DEFAULT_REPS;
+        this.actualReps = 0;
+    }
 
     public Set(String exerciseId, int targetReps) {
         this.exerciseId = exerciseId;
@@ -53,7 +61,7 @@ public class Set implements Parcelable {
         return actualReps;
     }
 
-    public void setActualReps(int actualReps) {
+    void setActualReps(int actualReps) {
         this.actualReps = actualReps;
     }
 

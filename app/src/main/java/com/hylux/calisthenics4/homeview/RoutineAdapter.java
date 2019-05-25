@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hylux.calisthenics4.R;
-import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;

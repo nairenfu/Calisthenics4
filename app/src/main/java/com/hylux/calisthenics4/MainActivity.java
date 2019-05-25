@@ -2,6 +2,7 @@ package com.hylux.calisthenics4;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,28 +11,31 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hylux.calisthenics4.homeview.ChooseWorkoutFragment;
 import com.hylux.calisthenics4.homeview.CreateWorkoutFragment;
 import com.hylux.calisthenics4.homeview.RecentActivitiesFragment;
 import com.hylux.calisthenics4.objects.Exercise;
+import com.hylux.calisthenics4.objects.Set;
 import com.hylux.calisthenics4.objects.Workout;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesDatabase;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
 import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 import com.hylux.calisthenics4.workoutview.SwipeViewPagerAdapter;
 import com.hylux.calisthenics4.workoutview.ToggleSwipeViewPager;
-import com.hylux.calisthenics4.workoutview.WorkoutActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener {
+public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener, CreateWorkoutFragment.CreateWorkoutFragmentListener {
 
     public static final int NEW_WORKOUT_REQUEST = 0;
 
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     private ArrayList<Fragment> fragments;
     private ViewPager viewPager;
     private PagerAdapter adapter;
+
+    private ArrayList<Exercise> exercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
         //Firebase Firestore database for templates
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        addExercise(Debug.debugExercise(), database);
+        exercises = new ArrayList<>();
+        getExercisesAsync(database);
 
         //Room database for actual activities
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
@@ -71,14 +78,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         fragments = new ArrayList<>();
         fragments.add(RecentActivitiesFragment.newInstance(new ArrayList<Workout>()));
         fragments.add(ChooseWorkoutFragment.newInstance());
-        fragments.add(CreateWorkoutFragment.newInstance());
 
         //Set up SwipeViewPager
         viewPager = findViewById(R.id.swipeViewPager);
         adapter = new SwipeViewPagerAdapter(getSupportFragmentManager(), fragments);
         //TODO disallow drag if on create workout.
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(2);
+        viewPager.setCurrentItem(1);
         ((ToggleSwipeViewPager) viewPager).setCanSwipe(false);
 
         activitiesViewModel.getRecentActivities(5,this);
@@ -129,6 +135,26 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         }
     }
 
+    private void getExercisesAsync(final FirebaseFirestore database) {
+        database.collection("exercises")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                Log.d("EXERCISE", documentSnapshot.toString());
+                                exercises.add(new Exercise((HashMap<String, Object>) Objects.requireNonNull(documentSnapshot.getData())));
+                            }
+                            Log.d("EXERCISES", exercises.toString());
+                            onExercisesRetrieved(exercises);
+                        } else {
+                            Log.d("Error getting documents", Objects.requireNonNull(task.getException()).toString());
+                        }
+                    }
+                });
+    }
+
     @Override
     public ArrayList<Workout> onGetRecentActivities(ArrayList<Workout> activities) {
 
@@ -136,5 +162,18 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
             ((RecentActivitiesFragment) fragments.get(1)).setActivities(activities);
         }
         return activities;
+    }
+
+    @Override
+    public void onExercisesRetrieved(ArrayList<Exercise> exercises) {
+        fragments.add(CreateWorkoutFragment.newInstance(exercises));
+        adapter.notifyDataSetChanged();
+        viewPager.setCurrentItem(2);
+    }
+
+    @Override
+    public void onExerciseSelected(Exercise exercise) {
+        Set set = new Set(exercise.getId(), 10);
+        ((CreateWorkoutFragment) fragments.get(2)).addSet(set);
     }
 }

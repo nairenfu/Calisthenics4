@@ -64,10 +64,6 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
 
         fragments = new ArrayList<>();
         fragments.add(WorkoutOverviewFragment.newInstance(workout));
-//        fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine()));
-//        for (String exerciseId : uniqueExercises) {
-//            fragments.add(ExerciseDetailsFragment.newInstance(exerciseId));
-//        }
         Log.d("FRAGMENTS", fragments.toString());
 
         viewPager = findViewById(R.id.swipeViewPager);

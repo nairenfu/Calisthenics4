@@ -61,6 +61,7 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
 
         RecyclerView recyclerView = rootView.findViewById(R.id.setRecycler);
         recyclerView.setHasFixedSize(true);
+
         layoutManager = new RoutineRecyclerLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -136,7 +137,6 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
 
     interface RoutineOverviewFragmentListener {
         void setActualReps(int actualReps, int position);
-
         void onWorkoutEnded(long endTime);
     }
 }

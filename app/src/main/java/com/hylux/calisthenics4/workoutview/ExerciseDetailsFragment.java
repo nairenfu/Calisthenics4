@@ -43,7 +43,7 @@ public class ExerciseDetailsFragment extends Fragment {
         } else {
             exerciseId = "DEFAULT";
         }
-        exercise = Debug.debugExercise(); //TODO get from list of all exercises
+        exercise = Debug.debugExercise(false); //TODO get from list of all exercises
     }
 
     @Nullable

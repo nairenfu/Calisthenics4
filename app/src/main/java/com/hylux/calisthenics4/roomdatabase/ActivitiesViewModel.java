@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivitiesViewModel extends AndroidViewModel {
@@ -32,5 +34,9 @@ public class ActivitiesViewModel extends AndroidViewModel {
 
     public void insert(Workout activity) {
         repository.insert(activity);
+    }
+
+    public void addAllExercises(ArrayList<Exercise> exercises) {
+        repository.addAllExercises(exercises);
     }
 }

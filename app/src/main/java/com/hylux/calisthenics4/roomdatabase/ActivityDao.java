@@ -3,10 +3,13 @@ package com.hylux.calisthenics4.roomdatabase;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -20,4 +23,8 @@ public interface ActivityDao {
 
     @Insert
     void insert(Workout activity);
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    //TODO replace strategy to REPLACE
+    void insertExercises(Exercise... exercises);
 }

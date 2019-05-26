@@ -126,8 +126,12 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
 
     @Override
     public void onExerciseSelected(Exercise exercise) {
-        Set set = new Set(exercise.getId(), 10);
-        workout.getRoutine().add(set);
-        routineAdapter.addToRoutine(set);
+        Log.d("RECYCLER_EXERCISE", exercise.toString());
+        workout.getRoutine().add(new Set(exercise.getId()));
+        Log.d("RECYCLER_WORKOUT", workout.toString());
+//        routineAdapter.getRoutine().add(new Set(exercise.getId()));
+        // Somehow ExerciseAdapter has the Routine itself, not just a reference. Updates to Workout Routine updates ExerciseAdapter Routine.
+        Log.d("RECYCLER_ROUTINE", routineAdapter.getRoutine().toString());
+        routineAdapter.notifyDataSetChanged();
     }
 }

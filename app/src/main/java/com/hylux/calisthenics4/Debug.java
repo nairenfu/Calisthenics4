@@ -9,7 +9,15 @@ import java.util.Arrays;
 
 public class Debug {
 
-    public static Exercise debugExercise() {
+    public static Exercise debugExercise(boolean isNew) {
+
+        String id;
+        if (isNew) {
+            id = "default";
+        } else {
+            id = "9V7CfImi2p4NVzOdd1lx";
+        }
+
         ArrayList<Integer> equipments = new ArrayList<>();
         equipments.add(1);
 
@@ -23,12 +31,12 @@ public class Debug {
         ArrayList<Integer> targetGroups = new ArrayList<>();
         targetGroups.add(0);
 
-        return new Exercise("9V7CfImi2p4NVzOdd1lx", "debugPullUp", "debugBack", steps, images, equipments, targetGroups);
+        return new Exercise(id, "debugPullUp", "debugBack", steps, images, equipments, targetGroups);
     }
 
     public static ArrayList<Exercise> debugExercises() {
         ArrayList<Exercise> debugExercises = new ArrayList<>();
-        debugExercises.add(debugExercise());
+        debugExercises.add(debugExercise(false));
         for (int i = 0; i < 5; i++) {
             debugExercises.add(new Exercise("debug" + i));
         }
@@ -39,7 +47,7 @@ public class Debug {
         return new Set("9V7CfImi2p4NVzOdd1lx", 10);
     }
 
-    public static ArrayList<Set> debugRoutine() {
+    private static ArrayList<Set> debugRoutine() {
         ArrayList<Set> debugRoutine = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             debugRoutine.add(new Set("9V7CfImi2p4NVzOdd1lx", i));

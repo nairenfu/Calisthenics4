@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
@@ -27,18 +27,18 @@
 
             <TextView
                 android:id="@+id/exerciseName"
-                tools:text="Pushup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="16dp" />
+                android:padding="16dp"
+                tools:text="Pushup" />
 
             <TextView
                 android:id="@+id/reps"
-                tools:text="10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp" />
+                android:padding="16dp"
+                tools:text="10" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

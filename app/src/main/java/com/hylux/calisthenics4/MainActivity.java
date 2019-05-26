@@ -2,7 +2,6 @@ package com.hylux.calisthenics4;
 
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -12,29 +11,22 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.hylux.calisthenics4.createworkoutview.CreateWorkoutActivity;
 import com.hylux.calisthenics4.homeview.ChooseWorkoutFragment;
-import com.hylux.calisthenics4.homeview.OnExercisesRetrievedCallback;
 import com.hylux.calisthenics4.homeview.RecentActivitiesFragment;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesDatabase;
 import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
+import com.hylux.calisthenics4.roomdatabase.FirestoreViewModel;
 import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 import com.hylux.calisthenics4.workoutview.SwipeViewPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener, OnExercisesRetrievedCallback, ChooseWorkoutFragment.ChoiceListener {
+public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener, ChooseWorkoutFragment.ChoiceListener {
 
     public static final int NEW_ACTIVITY_REQUEST = 0;
     public static final int CREATE_WORKOUT_REQUEST = 1;
@@ -69,11 +61,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         //Firebase Firestore database for templates
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         exercises = new ArrayList<>();
-        getExercisesAsync(database);
 
         //Room database for actual activities
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
         activitiesViewModel = new ActivitiesViewModel(getApplication());
+
+        FirestoreViewModel firestoreViewModel = new FirestoreViewModel(getApplication());
+        firestoreViewModel.getAllExercises(this);
 
         //Instantiate fragments
         fragments = new ArrayList<>();
@@ -108,59 +102,20 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         }
     }
 
-    private void addExercise(Exercise exercise, final FirebaseFirestore database) {
-        //TODO Check if item exists (maybe can do by initializing id to 0 first)
-        //TODO Do a further check if ID exists
-        final Exercise addedExercise = exercise;
-        if (exercise.getId().equals("default")) {
-            database.collection("exercises")
-                    .add(Debug.debugExercise())
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            String exerciseId = documentReference.getId();
-                            addedExercise.setId(exerciseId);
-                            database.collection("exercises")
-                                    .document(exerciseId)
-                                    .set(addedExercise)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("FIRE_STORE", "DocumentSnapshot successfully written!");
-                                        }
-                                    });
-                        }
-                    });
-        }
-    }
-
-    private void getExercisesAsync(final FirebaseFirestore database) {
-        database.collection("exercises")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                Log.d("EXERCISE", documentSnapshot.toString());
-                                exercises.add(new Exercise((HashMap<String, Object>) Objects.requireNonNull(documentSnapshot.getData())));
-                            }
-                            Log.d("EXERCISES", exercises.toString());
-                            onExercisesRetrieved(exercises);
-                        } else {
-                            Log.d("Error getting documents", Objects.requireNonNull(task.getException()).toString());
-                        }
-                    }
-                });
-    }
-
     @Override
-    public ArrayList<Workout> onGetRecentActivities(ArrayList<Workout> activities) {
+    public void onGetRecentActivities(ArrayList<Workout> activities) {
 
         if (fragments.get(1).getClass() == RecentActivitiesFragment.class) {
             ((RecentActivitiesFragment) fragments.get(1)).setActivities(activities);
         }
-        return activities;
+    }
+
+    @Override
+    public void onGetAllExercises(ArrayList<Exercise> exercises) {
+        Log.d("ON_GET_ALL_EX", exercises.toString());
+        this.exercises = exercises;
+        withExercises = true;
+        activitiesViewModel.addAllExercises(exercises);
     }
 
     @Override
@@ -173,11 +128,5 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         }
 
         startActivityForResult(createWorkoutIntent, CREATE_WORKOUT_REQUEST);
-    }
-
-    @Override
-    public void onExercisesRetrieved(ArrayList<Exercise> exercises) {
-        this.exercises = exercises;
-        withExercises = true;
     }
 }

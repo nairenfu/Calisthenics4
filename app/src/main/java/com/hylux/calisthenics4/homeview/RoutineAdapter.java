@@ -46,11 +46,6 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         return routine;
     }
 
-    public void addToRoutine(Set set) {
-        routine.add(set);
-        notifyDataSetChanged();
-    }
-
     class RoutineViewHolder extends RecyclerView.ViewHolder {
 
         View itemView;

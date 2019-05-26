@@ -16,8 +16,6 @@ import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.R;
-import com.hylux.calisthenics4.homeview.ExerciseAdapter;
-import com.hylux.calisthenics4.homeview.RoutineAdapter;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Set;
 import com.hylux.calisthenics4.objects.Workout;

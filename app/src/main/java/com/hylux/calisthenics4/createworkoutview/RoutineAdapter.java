@@ -1,4 +1,4 @@
-package com.hylux.calisthenics4.homeview;
+package com.hylux.calisthenics4.createworkoutview;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
     private ArrayList<Set> routine;
     private HashMap<String, String> exerciseNamesMap;
 
-    public RoutineAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {
+    RoutineAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {
         this.routine = routine;
         this.exerciseNamesMap = exerciseNamesMap;
     }
@@ -45,7 +45,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         return routine.size();
     }
 
-    public ArrayList<Set> getRoutine() {
+    ArrayList<Set> getRoutine() {
         return routine;
     }
 

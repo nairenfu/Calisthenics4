@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -26,7 +27,7 @@ import com.hylux.calisthenics4.workoutview.SwipeViewPagerAdapter;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener, ChooseWorkoutFragment.ChoiceListener {
+public class MainActivity extends AppCompatActivity implements OnTaskCompletedListener, ChooseWorkoutFragment.ChoiceListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final int NEW_ACTIVITY_REQUEST = 0;
     public static final int CREATE_WORKOUT_REQUEST = 1;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
 
-        activitiesViewModel.getRecentActivities(5,this);
+//        activitiesViewModel.getRecentActivities(5,this);
 
 //        final ImageButton refreshButton = findViewById(R.id.refreshButton);
 //        refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -113,8 +114,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     @Override
     public void onGetRecentActivities(ArrayList<Workout> activities) {
 
-        if (fragments.get(1).getClass() == RecentActivitiesFragment.class) {
-            ((RecentActivitiesFragment) fragments.get(1)).setActivities(activities);
+        if (fragments.get(0).getClass() == RecentActivitiesFragment.class) {
+            ((RecentActivitiesFragment) fragments.get(0)).setActivities(activities);
+            ((RecentActivitiesFragment) fragments.get(0)).getSwipeRefreshLayout().setRefreshing(false);
         }
     }
 
@@ -136,5 +138,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         }
 
         startActivityForResult(createWorkoutIntent, CREATE_WORKOUT_REQUEST);
+    }
+
+    @Override
+    public void onRefresh() {
+        if (fragments.get(0).getClass() == RecentActivitiesFragment.class) {
+            ((RecentActivitiesFragment) fragments.get(0)).getSwipeRefreshLayout().setRefreshing(true);
+            activitiesViewModel.getRecentActivities(5, this);
+        }
     }
 }

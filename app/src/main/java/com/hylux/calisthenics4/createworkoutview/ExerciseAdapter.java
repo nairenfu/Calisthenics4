@@ -1,4 +1,4 @@
-package com.hylux.calisthenics4.homeview;
+package com.hylux.calisthenics4.createworkoutview;
 
 import android.util.Log;
 import android.view.View;
@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hylux.calisthenics4.createworkoutview.CreateWorkoutListener;
 import com.hylux.calisthenics4.objects.Exercise;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     private ArrayList<Exercise> exercises;
 
-    public ExerciseAdapter(ArrayList<Exercise> exercises, CreateWorkoutListener listener) {
+    ExerciseAdapter(ArrayList<Exercise> exercises, CreateWorkoutListener listener) {
         this.exercises = exercises;
         this.listener = listener;
     }

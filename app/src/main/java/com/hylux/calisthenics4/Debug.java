@@ -28,10 +28,9 @@ public class Debug {
         ArrayList<String> images = new ArrayList<>();
         images.add("debugPlaceholder");
 
-        ArrayList<Integer> targetGroups = new ArrayList<>();
-        targetGroups.add(0);
+        ArrayList<String> progression = new ArrayList<>();
 
-        return new Exercise(id, "debugPullUp", "debugBack", steps, images, equipments, targetGroups);
+        return new Exercise(id, "debugPullUp", "debugBack", false, steps, images, equipments, progression);
     }
 
     public static ArrayList<Exercise> debugExercises() {

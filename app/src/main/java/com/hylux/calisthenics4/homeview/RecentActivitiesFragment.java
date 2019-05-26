@@ -59,11 +59,6 @@ public class RecentActivitiesFragment extends Fragment {
         // Inflate the layout for this fragment
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_recent_activities, container, false);
 
-        // Set up SwipeRefreshLayout
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(listener);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_blue_dark, android.R.color.holo_green_dark);
-
         // Set up RecyclerView
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
@@ -73,6 +68,12 @@ public class RecentActivitiesFragment extends Fragment {
 
         adapter = new ActivitiesAdapter(activities);
         recyclerView.setAdapter(adapter);
+
+        // Set up SwipeRefreshLayout
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(listener);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_blue_dark, android.R.color.holo_green_dark);
+        swipeRefreshLayout.setNestedScrollingEnabled(true);
 
         return rootView;
     }
@@ -107,6 +108,9 @@ public class RecentActivitiesFragment extends Fragment {
 
     public void setActivities(ArrayList<Workout> activities) {
         this.activities = activities;
+
+        //TODO BUG: on apply changes reset, recyclerView becomes null
+
         adapter.setActivities(activities);
     }
 }

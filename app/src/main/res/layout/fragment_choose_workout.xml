@@ -13,7 +13,6 @@
         android:layout_gravity="center"
         android:layout_margin="16dp"
         android:animateLayoutChanges="true"
-        android:background="@color/cardview_dark_background"
         app:cardPreventCornerOverlap="true"
         app:cardCornerRadius="32dp">
 
@@ -23,7 +22,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/choose"
-            android:background="@color/cardview_dark_background"
             android:src="@drawable/ic_play_arrow_black_48dp" />
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/createWorkoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_black_24dp" />
 </FrameLayout>

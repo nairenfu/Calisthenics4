@@ -25,29 +25,32 @@ public class Exercise implements Parcelable {
     @NonNull
     private String id;
     private String name, aim;
-    private ArrayList<String> steps, images;
+    private boolean progressive;
+    private ArrayList<String> steps, images, progression;
     //TODO need to think of a good way to store this array list, so that can easily search by equipments/target groups
     //TODO otherwise for all such queries to be made through Firebase?
-    private ArrayList<Integer> equipments, targetGroups; //TODO Use IntDef
+    private ArrayList<Integer> equipments; //TODO Use IntDef
 
     @Ignore
     public Exercise(String name) {
         this.id = "default";
         this.name = name;
+        this.progressive = false;
         this.steps = new ArrayList<>();
         this.images = new ArrayList<>();
         this.equipments = new ArrayList<>();
-        this.targetGroups = new ArrayList<>();
+        this.progression = new ArrayList<>();
     }
 
-    public Exercise(@NonNull String id, String name, String aim, ArrayList<String> steps, ArrayList<String> images, ArrayList<Integer> equipments, ArrayList<Integer> targetGroups) {
+    public Exercise(@NonNull String id, String name, String aim, boolean progressive, ArrayList<String> steps, ArrayList<String> images, ArrayList<Integer> equipments, ArrayList<String> progression) {
         this.id = id;
         this.name = name;
         this.aim = aim;
+        this.progressive = progressive;
         this.steps = steps;
         this.images = images;
         this.equipments = equipments;
-        this.targetGroups = targetGroups;
+        this.progression = progression;
     }
 
     @Ignore
@@ -56,10 +59,11 @@ public class Exercise implements Parcelable {
         this.id = (String) Objects.requireNonNull(data.get("id"));
         this.name = (String) data.get("name");
         this.aim = (String) data.get("aim");
+        this.progressive = (boolean) data.get("progressive");
         this.steps = (ArrayList<String>) data.get("steps");
         this.images = new ArrayList<>();
         this.equipments = (ArrayList<Integer>) data.get("equipments");
-        this.targetGroups = (ArrayList<Integer>) data.get("targetGroups");
+        this.progression = (ArrayList<String>) data.get("progression");
     }
 
     @Ignore
@@ -68,12 +72,14 @@ public class Exercise implements Parcelable {
         id = Objects.requireNonNull(in.readString());
         name = in.readString();
         aim = in.readString();
+        progressive = in.readInt() != 0;
         steps = new ArrayList<>();
         in.readStringList(steps);
         images = new ArrayList<>();
         in.readStringList(images);
         equipments = in.readArrayList(Integer.class.getClassLoader());
-        targetGroups = in.readArrayList(Integer.class.getClassLoader());
+        progression = new ArrayList<>();
+        in.readStringList(progression);
     }
 
     public static final Creator<Exercise> CREATOR = new Creator<Exercise>() {
@@ -113,6 +119,14 @@ public class Exercise implements Parcelable {
         this.aim = aim;
     }
 
+    public boolean isProgressive() {
+        return progressive;
+    }
+
+    public void setProgressive(boolean progressive) {
+        this.progressive = progressive;
+    }
+
     public ArrayList<String> getSteps() {
         return steps;
     }
@@ -137,12 +151,12 @@ public class Exercise implements Parcelable {
         this.equipments = equipments;
     }
 
-    public ArrayList<Integer> getTargetGroups() {
-        return targetGroups;
+    public ArrayList<String> getProgression() {
+        return progression;
     }
 
-    public void setTargetGroups(ArrayList<Integer> targetGroups) {
-        this.targetGroups = targetGroups;
+    public void setProgression(ArrayList<String> progression) {
+        this.progression = progression;
     }
 
     @Override
@@ -155,31 +169,25 @@ public class Exercise implements Parcelable {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(aim);
+        dest.writeInt(progressive ? 1 : 0);
         dest.writeStringList(steps);
         dest.writeStringList(images);
         dest.writeList(equipments);
-        dest.writeList(targetGroups);
+        dest.writeStringList(progression);
     }
-
-//      this.id = id;
-//        this.name = name;
-//        this.aim = aim;
-//        this.steps = steps;
-//        this.images = images;
-//        this.equipments = equipments;
-//        this.targetGroups = targetGroups;
 
     @NonNull
     @Override
     public String toString() {
         return "Exercise{" +
-                "name='" + name + '\'' +
-                ", id='" + id + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", aim='" + aim + '\'' +
+                ", progressive=" + progressive +
                 ", steps=" + steps +
                 ", images=" + images +
                 ", equipments=" + equipments +
-                ", targetGroups=" + targetGroups +
+                ", progression=" + progression +
                 '}';
     }
 }

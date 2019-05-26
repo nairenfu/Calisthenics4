@@ -23,6 +23,7 @@ import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
 import com.hylux.calisthenics4.roomdatabase.FirestoreViewModel;
 import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 import com.hylux.calisthenics4.workoutview.SwipeViewPagerAdapter;
+import com.hylux.calisthenics4.workoutview.WorkoutActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -83,15 +84,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         viewPager.setCurrentItem(1);
 
 //        activitiesViewModel.getRecentActivities(5,this);
-
-//        final ImageButton refreshButton = findViewById(R.id.refreshButton);
-//        refreshButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d("REFRESH", "onClick()");
-//                activitiesViewModel.getRecentActivities(5, onTaskCompletedListener);
-//            }
-//        });
     }
 
     @Override
@@ -100,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
             if (resultCode == RESULT_OK) {
                 Workout activity = Objects.requireNonNull(data).getParcelableExtra("EXTRA_WORKOUT");
                 activitiesViewModel.insert(activity);
+                viewPager.setCurrentItem(0);
+                onRefresh();
             }
         }
 
@@ -141,9 +135,17 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     }
 
     @Override
+    public void onStartActivity() {
+        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
+        Workout debugWorkout = Debug.debugWorkout();
+        debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
+        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
+    }
+
+    @Override
     public void onRefresh() {
         if (fragments.get(0).getClass() == RecentActivitiesFragment.class) {
-            ((RecentActivitiesFragment) fragments.get(0)).getSwipeRefreshLayout().setRefreshing(true);
+//            ((RecentActivitiesFragment) fragments.get(0)).getSwipeRefreshLayout().setRefreshing(true);
             activitiesViewModel.getRecentActivities(5, this);
         }
     }

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.R;
 
 public class ChooseWorkoutFragment extends Fragment {
@@ -51,8 +52,6 @@ public class ChooseWorkoutFragment extends Fragment {
                     chooseButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            choiceListener.onCreateWorkout();
-
                             CardView.MarginLayoutParams searchViewParams = (CardView.MarginLayoutParams) chooseToSearchButton.getLayoutParams();
                             int finalWidth = parentWidth[0] - searchViewParams.leftMargin - searchViewParams.rightMargin;
                             Log.d("ANIM_FINAL_WIDTH", String.valueOf(finalWidth));
@@ -67,11 +66,21 @@ public class ChooseWorkoutFragment extends Fragment {
                                 }
                             });
                             animator.start();
+                            choiceListener.onStartActivity();
                         }
                     });
                 }
             });
         }
+
+        final FloatingActionButton createWorkoutButton = rootView.findViewById(R.id.createWorkoutButton);
+        createWorkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choiceListener.onCreateWorkout();
+            }
+        });
+
         return rootView;
     }
 
@@ -97,5 +106,6 @@ public class ChooseWorkoutFragment extends Fragment {
 
     public interface ChoiceListener {
         void onCreateWorkout();
+        void onStartActivity();
     }
 }

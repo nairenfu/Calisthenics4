@@ -48,19 +48,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        onTaskCompletedListener = this;
-
-//        final Button debugButton = findViewById(R.id.debugButton);
-//        debugButton.setOnClickListener(new View.OnClickListener() { //TODO Maybe can replace with lambda
-//            @Override
-//            public void onClick(View v) {
-//                Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
-//                Workout debugWorkout = Debug.debugWorkout();
-//                debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
-//                startActivityForResult(debugActivityIntent, NEW_WORKOUT_REQUEST);
-//            }
-//        });
-
         //Firebase Firestore database for templates
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         exercises = new ArrayList<>();
@@ -82,8 +69,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         adapter = new SwipeViewPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
-
-//        activitiesViewModel.getRecentActivities(5,this);
     }
 
     @Override
@@ -120,6 +105,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         this.exercises = exercises;
         withExercises = true;
         activitiesViewModel.addAllExercises(exercises);
+    }
+
+    @Override
+    public void onGetExerciseFromId(Exercise exercise) {
+
     }
 
     @Override

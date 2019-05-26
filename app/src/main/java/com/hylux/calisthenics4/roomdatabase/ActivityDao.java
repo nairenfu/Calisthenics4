@@ -9,7 +9,6 @@ import androidx.room.Query;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -23,6 +22,9 @@ public interface ActivityDao {
 
     @Insert
     void insert(Workout activity);
+
+    @Query("SELECT * FROM exercises WHERE id=:id LIMIT 1")
+    Exercise getExerciseById(String id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     //TODO replace strategy to REPLACE

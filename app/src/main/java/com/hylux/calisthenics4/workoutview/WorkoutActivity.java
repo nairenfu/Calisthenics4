@@ -21,12 +21,15 @@ import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Set;
 import com.hylux.calisthenics4.objects.Workout;
+import com.hylux.calisthenics4.roomdatabase.ActivitiesDatabase;
+import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
+import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class WorkoutActivity extends FragmentActivity implements DatabaseCallback, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener {
+public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener {
 
     private ArrayList<Fragment> fragments;
     private ViewPager viewPager;
@@ -40,6 +43,9 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+
+        ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
+        ActivitiesViewModel activitiesViewModel = new ActivitiesViewModel(getApplication());
 
         exerciseMap = new HashMap<>();
         exerciseNameMap = new HashMap<>();
@@ -57,7 +63,7 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
         for (Set set : workout.getRoutine()) {
             if (!uniqueExercises.contains(set.getExerciseId())) {
                 uniqueExercises.add(set.getExerciseId());
-                getExerciseFromId(set.getExerciseId());
+                activitiesViewModel.getExerciseById(set.getExerciseId(), this);
             }
         }
         Log.d("UNIQUE_EXERCISES", uniqueExercises.toString());
@@ -77,43 +83,6 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
             super.onBackPressed();
         } else {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
-        }
-    }
-
-    public void getExerciseFromId(String exerciseId) {
-        Log.d("FIRE_STORE", "getExerciseFromId " + exerciseId);
-
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        DocumentReference exerciseDoc = database.collection("exercises").document(exerciseId);
-        exerciseDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    assert document != null;
-                    if (document.exists()) {
-                        Log.d("FIRE_STORE", Objects.requireNonNull(document.getData()).toString());
-                        Log.d("FIRE_STORE", (String) document.get("name"));
-                        Exercise exercise = new Exercise((HashMap<String, Object>) document.getData());
-                        exerciseCallback(exercise);
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    public void exerciseCallback(Exercise exercise) {
-        exerciseMap.put(exercise.getId(), exercise);
-        exerciseNameMap.put((exercise.getId()), exercise.getName()); //TODO Change all exerciseNameMap to exerciseNamesMap
-        Log.d("EXERCISE", exerciseMap.toString());
-        if (exerciseNameMap.size() == uniqueExercises.size()) {
-            fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
-            pagerAdapter.notifyDataSetChanged();
-            for (String exerciseId : uniqueExercises) {
-                fragments.add(ExerciseDetailsFragment.newInstance(exerciseId));
-                pagerAdapter.notifyDataSetChanged();
-            }
         }
     }
 
@@ -141,5 +110,30 @@ public class WorkoutActivity extends FragmentActivity implements DatabaseCallbac
         setResult(RESULT_OK, resultIntent);
         finish();
 
+    }
+
+    @Override
+    public void onGetRecentActivities(ArrayList<Workout> activities) {
+
+    }
+
+    @Override
+    public void onGetAllExercises(ArrayList<Exercise> exercises) {
+
+    }
+
+    @Override
+    public void onGetExerciseFromId(Exercise exercise) {
+        exerciseMap.put(exercise.getId(), exercise);
+        exerciseNameMap.put((exercise.getId()), exercise.getName()); //TODO Change all exerciseNameMap to exerciseNamesMap
+        Log.d("EXERCISE", exerciseMap.toString());
+        if (exerciseNameMap.size() == uniqueExercises.size()) {
+            fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
+            pagerAdapter.notifyDataSetChanged();
+            for (String exerciseId : uniqueExercises) {
+                fragments.add(ExerciseDetailsFragment.newInstance(exerciseId));
+                pagerAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

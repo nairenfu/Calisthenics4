@@ -8,4 +8,5 @@ import java.util.ArrayList;
 public interface OnTaskCompletedListener {
     void onGetRecentActivities(ArrayList<Workout> activities);
     void onGetAllExercises(ArrayList<Exercise> exercises);
+    void onGetExerciseFromId(Exercise exercise);
 }

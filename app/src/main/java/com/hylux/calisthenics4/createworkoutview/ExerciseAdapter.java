@@ -16,11 +16,21 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     private CreateWorkoutListener listener;
 
-    private ArrayList<Exercise> exercises;
+    private ArrayList<Exercise> mergedProgressionExercises;
 
     ExerciseAdapter(ArrayList<Exercise> exercises, CreateWorkoutListener listener) {
-        this.exercises = exercises;
         this.listener = listener;
+
+        mergedProgressionExercises = new ArrayList<>();
+        for (Exercise exercise: exercises) {
+            if (exercise.isProgressive()) {
+                if (exercise.getId().equals(exercise.getProgression().get(exercise.getProgression().size() - 1))) {
+                    mergedProgressionExercises.add(exercise);
+                }
+            } else {
+                mergedProgressionExercises.add(exercise);
+            }
+        }
     }
 
     @NonNull
@@ -32,19 +42,23 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
         final int index = holder.getAdapterPosition();
-        holder.exerciseName.setText(exercises.get(position).getName());
+        String name = mergedProgressionExercises.get(position).getName();
+        if (mergedProgressionExercises.get(position).isProgressive()) {
+            name += " (Progression)";
+        }
+        holder.exerciseName.setText(name);
         holder.exerciseName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("EXERCISE_ADAPTER", exercises.get(index).getName());
-                listener.onExerciseSelected(exercises.get(index));
+                Log.d("EXERCISE_ADAPTER", mergedProgressionExercises.get(index).getName());
+                listener.onExerciseSelected(mergedProgressionExercises.get(index));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return exercises.size();
+        return mergedProgressionExercises.size();
     }
 
     class ExerciseViewHolder extends RecyclerView.ViewHolder {

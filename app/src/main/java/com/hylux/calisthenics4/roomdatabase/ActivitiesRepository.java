@@ -26,6 +26,8 @@ import java.util.Objects;
 
 class ActivitiesRepository {
 
+    public static final int ROOM = 0, FIRE = 1;
+
     private ActivityDao activityDao;
     private LiveData<List<Workout>> allActivities;
 
@@ -88,6 +90,66 @@ class ActivitiesRepository {
         }
     }
 
+    // Get exercise by id
+    void getExerciseById(String exerciseId, final OnTaskCompletedListener listener, int flag) {
+
+        if (flag == 0) {
+            new GetExerciseByIdAsyncTask(activityDao, this, listener).execute(exerciseId);
+        }
+
+        if (flag == 1) {
+            DocumentReference exerciseDoc = fireStore.collection("exercises").document(exerciseId);
+            exerciseDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            Log.d("FIRE_STORE", Objects.requireNonNull(document.getData()).toString());
+                            Log.d("FIRE_STORE", (String) document.get("name"));
+                            Exercise exercise = new Exercise((HashMap<String, Object>) document.getData());
+                            listener.onGetExerciseFromId(exercise);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private static class GetExerciseByIdAsyncTask extends AsyncTask<String, Void, Exercise> {
+
+        private ActivityDao activityDao;
+        private ActivitiesRepository activitiesRepository;
+        private OnTaskCompletedListener onTaskCompletedListener;
+
+        private String id;
+
+        GetExerciseByIdAsyncTask(ActivityDao dao, ActivitiesRepository repository, OnTaskCompletedListener listener) {
+            activityDao = dao;
+            activitiesRepository = repository;
+            onTaskCompletedListener = listener;
+        }
+
+        @Override
+        protected Exercise doInBackground(String... strings) {
+            id = strings[0];
+            return activityDao.getExerciseById(id);
+        }
+
+        @Override
+        protected void onPostExecute(Exercise exercise) {
+            super.onPostExecute(exercise);
+            if (exercise != null) {
+                Log.d("GET_FROM_ROOM", exercise.toString());
+                onTaskCompletedListener.onGetExerciseFromId(exercise);
+            } else {
+                Log.d("GET_FROM_FIRE", "TRUE");
+                activitiesRepository.getExerciseById(id, onTaskCompletedListener, FIRE);
+            }
+        }
+    }
+
     //Get n recent activities
     void getRecentActivities(int n, OnTaskCompletedListener listener) {
         new GetRecentActivitiesAsyncTask(activityDao, listener).execute(n);
@@ -128,7 +190,7 @@ class ActivitiesRepository {
         //TODO Check if item exists (maybe can do by initializing id to 0 first)
         //TODO Do a further check if ID exists
         final Exercise addedExercise = exercise;
-        if (addedExercise.getId().equals("default")) {
+        if (addedExercise.getId().contains("default")) {
             fireStore.collection("exercises")
                     .add(addedExercise)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

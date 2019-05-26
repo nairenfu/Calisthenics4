@@ -32,6 +32,10 @@ public class ActivitiesViewModel extends AndroidViewModel {
         repository.getRecentActivities(n, listener);
     }
 
+    public void getExerciseById(String id, OnTaskCompletedListener listener) {
+        repository.getExerciseById(id, listener, ActivitiesRepository.ROOM);
+    }
+
     public void insert(Workout activity) {
         repository.insert(activity);
     }

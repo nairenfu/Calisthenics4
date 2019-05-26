@@ -56,14 +56,18 @@ public class Exercise implements Parcelable {
     @Ignore
     @SuppressWarnings("unchecked") // Clearly defined data types
     public Exercise(HashMap<String, Object> data) {
-        this.id = (String) Objects.requireNonNull(data.get("id"));
-        this.name = (String) data.get("name");
-        this.aim = (String) data.get("aim");
-        this.progressive = (boolean) data.get("progressive");
-        this.steps = (ArrayList<String>) data.get("steps");
-        this.images = new ArrayList<>();
-        this.equipments = (ArrayList<Integer>) data.get("equipments");
-        this.progression = (ArrayList<String>) data.get("progression");
+        id = (String) Objects.requireNonNull(data.get("id"));
+        name = (String) data.get("name");
+        aim = (String) data.get("aim");
+        progressive = (boolean) data.get("progressive");
+        steps = (ArrayList<String>) data.get("steps");
+        images = new ArrayList<>();
+        equipments = (ArrayList<Integer>) data.get("equipments");
+        ArrayList<String> progressionTemp = (ArrayList<String>) data.get("progression");
+        progression = new ArrayList<>();
+        for (String id : Objects.requireNonNull(progressionTemp)) {
+            progression.add(id.replace(" ", ""));
+        }
     }
 
     @Ignore
@@ -78,8 +82,12 @@ public class Exercise implements Parcelable {
         images = new ArrayList<>();
         in.readStringList(images);
         equipments = in.readArrayList(Integer.class.getClassLoader());
+        ArrayList<String> progressionTemp = new ArrayList<>();
+        in.readStringList(progressionTemp);
         progression = new ArrayList<>();
-        in.readStringList(progression);
+        for (String id : progressionTemp) {
+            progression.add(id.replace(" ", ""));
+        }
     }
 
     public static final Creator<Exercise> CREATOR = new Creator<Exercise>() {

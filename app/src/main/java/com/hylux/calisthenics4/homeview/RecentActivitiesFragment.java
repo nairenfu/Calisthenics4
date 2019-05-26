@@ -110,7 +110,7 @@ public class RecentActivitiesFragment extends Fragment {
         this.activities = activities;
 
         //TODO BUG: on apply changes reset, recyclerView becomes null
-
+        Log.d("ADAPTER", adapter.toString());
         adapter.setActivities(activities);
     }
 }

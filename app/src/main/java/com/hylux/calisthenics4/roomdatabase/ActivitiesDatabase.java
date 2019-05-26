@@ -10,7 +10,7 @@ import androidx.room.TypeConverters;
 import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 
-@Database(entities = {Workout.class, Exercise.class}, version = 4)
+@Database(entities = {Workout.class, Exercise.class}, version = 5)
 @TypeConverters(Converters.class)
 public abstract class ActivitiesDatabase extends RoomDatabase {
 

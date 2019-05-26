@@ -20,8 +20,12 @@ import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 
 public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener {
+
+    private ActivitiesViewModel activitiesViewModel;
 
     private ArrayList<Fragment> fragments;
     private ViewPager viewPager;
@@ -29,7 +33,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     private Workout workout;
     private HashMap<String, Exercise> exerciseMap;
     private HashMap<String, String> exerciseNameMap;
-    ArrayList<String> uniqueExercises;
+    HashSet<String> uniqueExercises;
+    ArrayList<String> progressions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,7 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         setContentView(R.layout.activity_workout);
 
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
-        ActivitiesViewModel activitiesViewModel = new ActivitiesViewModel(getApplication());
+        activitiesViewModel = new ActivitiesViewModel(getApplication());
 
         exerciseMap = new HashMap<>();
         exerciseNameMap = new HashMap<>();
@@ -51,7 +56,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
 
         //TODO Set flag OK once all data in
         //TODO What to do if not found
-        uniqueExercises = new ArrayList<>();
+        uniqueExercises = new HashSet<>();
+        progressions = new ArrayList<>();
         for (Set set : workout.getRoutine()) {
             if (!uniqueExercises.contains(set.getExerciseId())) {
                 uniqueExercises.add(set.getExerciseId());
@@ -117,10 +123,30 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     @Override
     public void onGetExerciseFromId(Exercise exercise) {
         exerciseMap.put(exercise.getId(), exercise);
+        if (exercise.isProgressive() && exercise.getId().equals(exercise.getProgression().get(exercise.getProgression().size()-1))) {
+            Log.d("PROGRESSIONS", exercise.getName());
+            progressions.add(exercise.getId());
+            Log.d("PROGRESSIONS", exercise.getProgression().toString());
+            for (String exerciseId : exercise.getProgression()) {
+                String id = exerciseId.replace(" ", "");
+                if (exerciseMap.get(id) == null) {
+                    Log.d("PROGRESSIONS_NULL", id);
+                    activitiesViewModel.getExerciseById(id, this);
+                    uniqueExercises.add(id);
+                } else {
+                    Log.d("PROGRESSIONS_NOT_N", Objects.requireNonNull(exerciseMap.get(id)).getName());
+                }
+            }
+        }
         exerciseNameMap.put((exercise.getId()), exercise.getName()); //TODO Change all exerciseNameMap to exerciseNamesMap
         Log.d("EXERCISE", exerciseMap.toString());
+        Log.d("PROGRESSION_SIZE", String.valueOf(exerciseNameMap.size()));
+        Log.d("PROGRESSION_UNIQUE", String.valueOf(uniqueExercises.size()));
         if (exerciseNameMap.size() == uniqueExercises.size()) {
             fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
+
+            ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
+
             pagerAdapter.notifyDataSetChanged();
             for (String exerciseId : uniqueExercises) {
                 fragments.add(ExerciseDetailsFragment.newInstance(exerciseId));

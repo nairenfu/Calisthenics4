@@ -5,21 +5,32 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.R;
+import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class WorkoutOverviewFragment extends Fragment {
 
     private Workout workout;
+
+    private RecyclerView progressionsRecycler;
+    private ProgressionAdapter adapter;
 
     private StartWorkoutCallback startWorkoutCallback;
 
@@ -80,8 +91,24 @@ public class WorkoutOverviewFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onDetach() {
+        super.onDetach();
+        startWorkoutCallback = null;
+    }
+
+    public void createProgressionsRecycler(ProgressionAdapter adapter) {
+        FrameLayout progressionContainer = Objects.requireNonNull(getView()).findViewById(R.id.progressionContainer);
+
+        progressionsRecycler = new RecyclerView(Objects.requireNonNull(getContext()));
+        this.adapter = adapter;
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        progressionsRecycler.setLayoutManager(layoutManager);
+
+        progressionsRecycler.setAdapter(this.adapter);
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        progressionContainer.addView(progressionsRecycler, layoutParams);
     }
 
     static WorkoutOverviewFragment newInstance(@NonNull Workout workout) {
@@ -92,11 +119,5 @@ public class WorkoutOverviewFragment extends Fragment {
         WorkoutOverviewFragment fragment = new WorkoutOverviewFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        startWorkoutCallback = null;
     }
 }

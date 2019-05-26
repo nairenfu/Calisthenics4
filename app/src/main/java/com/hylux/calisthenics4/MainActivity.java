@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 //        debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
 //        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
 
-        firestoreViewModel.getWorkoutByIdAsync("a0ywRsQq8PefwLEiFReR", this);
+        firestoreViewModel.getWorkoutByIdAsync("T8p25e5PyJXy19g76XuA", this);
     }
 
     @Override

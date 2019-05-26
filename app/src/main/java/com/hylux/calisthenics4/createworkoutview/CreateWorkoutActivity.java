@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.homeview.ExerciseAdapter;
 import com.hylux.calisthenics4.homeview.RoutineAdapter;
@@ -123,6 +125,18 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
 
         routineAdapter = new RoutineAdapter(workout.getRoutine(), exerciseNamesMap);
         routineRecycler.setAdapter(routineAdapter);
+
+        // Finish Creating
+        FloatingActionButton finishButton = findViewById(R.id.finishButton);
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("EXTRA_WORKOUT", workout);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 
     @Override

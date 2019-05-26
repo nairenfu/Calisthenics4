@@ -24,7 +24,7 @@ public class Workout implements Parcelable {
 
     @Ignore
     public Workout() {
-        this.id = Utility.randomId(15);
+        this.id = "default";
 
         routine = new ArrayList<>();
         equipments = new ArrayList<>();

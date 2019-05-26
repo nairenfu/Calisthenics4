@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.hylux.calisthenics4.objects.Exercise;
+import com.hylux.calisthenics4.objects.Workout;
 
 public class FirestoreViewModel extends AndroidViewModel {
 
@@ -18,6 +19,10 @@ public class FirestoreViewModel extends AndroidViewModel {
 
     public void addExercise(Exercise exercise, boolean overwrite) {
         repository.addExercise(exercise, overwrite);
+    }
+
+    public void addWorkout(Workout workout) {
+        repository.addWorkout(workout);
     }
 
     public void getAllExercises(OnTaskCompletedListener listener) {

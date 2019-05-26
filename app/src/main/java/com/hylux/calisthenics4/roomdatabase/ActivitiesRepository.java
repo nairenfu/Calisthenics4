@@ -128,7 +128,7 @@ class ActivitiesRepository {
         //TODO Check if item exists (maybe can do by initializing id to 0 first)
         //TODO Do a further check if ID exists
         final Exercise addedExercise = exercise;
-        if (exercise.getId().equals("default")) {
+        if (addedExercise.getId().equals("default")) {
             fireStore.collection("exercises")
                     .add(addedExercise)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -159,6 +159,30 @@ class ActivitiesRepository {
                             }
                         });
             }
+        }
+    }
+
+    void addWorkout(Workout workout) {
+        final Workout addedWorkout = workout;
+        if (addedWorkout.getId().equals("default") || addedWorkout.getId() == null) {
+            fireStore.collection("workouts")
+                    .add(addedWorkout)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            String workoutId = documentReference.getId();
+                            addedWorkout.setId(workoutId);
+                            fireStore.collection("workouts")
+                                    .document(workoutId)
+                                    .set(addedWorkout)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("FIRE_STORE", "DocumentSnapshot successfully written!");
+                                        }
+                                    });
+                        }
+                    });
         }
     }
 

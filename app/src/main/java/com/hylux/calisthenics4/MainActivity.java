@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     public static final int CREATE_WORKOUT_REQUEST = 1;
 
     private ActivitiesViewModel activitiesViewModel;
+    private FirestoreViewModel firestoreViewModel;
 
     private ArrayList<Fragment> fragments;
     private ViewPager viewPager;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
         activitiesViewModel = new ActivitiesViewModel(getApplication());
 
-        FirestoreViewModel firestoreViewModel = new FirestoreViewModel(getApplication());
+        firestoreViewModel = new FirestoreViewModel(getApplication());
         firestoreViewModel.getAllExercises(this);
 
         //Instantiate fragments
@@ -98,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
             if (resultCode == RESULT_OK) {
                 Workout activity = Objects.requireNonNull(data).getParcelableExtra("EXTRA_WORKOUT");
                 activitiesViewModel.insert(activity);
+            }
+        }
+
+        if (requestCode == CREATE_WORKOUT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Workout workout = Objects.requireNonNull(data).getParcelableExtra("EXTRA_WORKOUT");
+                firestoreViewModel.addWorkout(workout);
             }
         }
     }

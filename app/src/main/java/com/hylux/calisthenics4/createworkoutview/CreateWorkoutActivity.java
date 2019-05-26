@@ -21,11 +21,13 @@ import com.hylux.calisthenics4.objects.Set;
 import com.hylux.calisthenics4.objects.Workout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CreateWorkoutActivity extends AppCompatActivity implements CreateWorkoutListener{
 
     private Workout workout;
     private ArrayList<Exercise> exercises;
+    private HashMap<String, String> exerciseNamesMap;
 
     private RecyclerView exercisesRecycler;
     private ExerciseAdapter exercisesAdapter;
@@ -39,11 +41,15 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
         setContentView(R.layout.activity_create_workout);
 
         workout = new Workout();
+        exerciseNamesMap = new HashMap<>();
 
         // Set up Exercises list
         if (getIntent() != null) {
             if (getIntent().getBooleanExtra("WITH_EXERCISES", false)) {
                 exercises = getIntent().getParcelableArrayListExtra("EXTRA_EXERCISES");
+                for (Exercise exercise : exercises) {
+                    exerciseNamesMap.put(exercise.getId(), exercise.getName());
+                }
             } else {
                 exercises = new ArrayList<>();
             }
@@ -115,13 +121,8 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
         RecyclerView.LayoutManager routineLayoutManager = new LinearLayoutManager(this);
         routineRecycler.setLayoutManager(routineLayoutManager);
 
-        routineAdapter = new RoutineAdapter(workout.getRoutine());
+        routineAdapter = new RoutineAdapter(workout.getRoutine(), exerciseNamesMap);
         routineRecycler.setAdapter(routineAdapter);
-    }
-
-    @Override
-    public void onExercisesRetrieved(ArrayList<Exercise> exercises) {
-
     }
 
     @Override

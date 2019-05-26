@@ -12,13 +12,16 @@ import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineViewHolder> {
 
     private ArrayList<Set> routine;
+    private HashMap<String, String> exerciseNamesMap;
 
-    public RoutineAdapter(ArrayList<Set> routine) {
+    public RoutineAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap) {
         this.routine = routine;
+        this.exerciseNamesMap = exerciseNamesMap;
     }
 
     @NonNull
@@ -33,7 +36,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         TextView nameView = holder.itemView.findViewById(R.id.exerciseName);
         TextView repsView = holder.itemView.findViewById(R.id.reps);
 
-        nameView.setText(routine.get(position).getExerciseId());
+        nameView.setText(exerciseNamesMap.get(routine.get(position).getExerciseId()));
         repsView.setText(String.valueOf(routine.get(position).getTargetReps()));
     }
 
@@ -51,7 +54,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         View itemView;
         TextView nameView, repsView;
 
-        public RoutineViewHolder(@NonNull View itemView) {
+        RoutineViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
 

@@ -113,6 +113,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     }
 
     @Override
+    public void onGetWorkoutFromId(Workout workout) {
+        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
+        debugActivityIntent.putExtra("EXTRA_WORKOUT", workout);
+        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
+    }
+
+    @Override
     public void onCreateWorkout() {
         Intent createWorkoutIntent = new Intent(MainActivity.this, CreateWorkoutActivity.class);
 
@@ -126,10 +133,12 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
     @Override
     public void onStartActivity() {
-        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
-        Workout debugWorkout = Debug.debugWorkout();
-        debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
-        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
+//        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
+//        Workout debugWorkout = Debug.debugWorkout();
+//        debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
+//        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
+
+        firestoreViewModel.getWorkoutByIdAsync("a0ywRsQq8PefwLEiFReR", this);
     }
 
     @Override

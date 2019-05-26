@@ -1,6 +1,5 @@
 package com.hylux.calisthenics4.workoutview;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
@@ -10,12 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.hylux.calisthenics4.DatabaseCallback;
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Exercise;
@@ -27,7 +20,6 @@ import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener {
 
@@ -135,5 +127,10 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
                 pagerAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Override
+    public void onGetWorkoutFromId(Workout workout) {
+
     }
 }

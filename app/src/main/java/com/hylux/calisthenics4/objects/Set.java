@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
+
 public class Set implements Parcelable {
 
     private static final int DEFAULT_REPS = 10;
@@ -21,6 +23,14 @@ public class Set implements Parcelable {
         this.exerciseId = exerciseId;
         this.targetReps = targetReps;
         this.actualReps = 0;
+    }
+
+    public Set(HashMap<String, Object> data) {
+        exerciseId = (String) data.get("exerciseId");
+        Long targetLong = (long) data.get("targetReps");
+        targetReps = targetLong.intValue();
+        Long actualLong = (long) data.get("actualReps");
+        actualReps = actualLong.intValue();
     }
 
     protected Set(Parcel in) {

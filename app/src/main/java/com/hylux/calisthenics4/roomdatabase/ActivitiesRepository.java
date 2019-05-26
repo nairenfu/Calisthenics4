@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.objects.Exercise;
+import com.hylux.calisthenics4.objects.Set;
 import com.hylux.calisthenics4.objects.Workout;
 
 import java.util.ArrayList;
@@ -116,6 +117,8 @@ class ActivitiesRepository {
             });
         }
     }
+
+    // TODO get Workout from ROOM
 
     private static class GetExerciseByIdAsyncTask extends AsyncTask<String, Void, Exercise> {
 
@@ -246,6 +249,20 @@ class ActivitiesRepository {
                         }
                     });
         }
+    }
+
+    void getWorkoutById(String id, final OnTaskCompletedListener listener) {
+        fireStore.collection("workouts")
+                .document(id)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Workout workout = new Workout((HashMap<String, Object>) Objects.requireNonNull(documentSnapshot.getData()));
+                        Log.d("WORKOUT", workout.toString());
+                        listener.onGetWorkoutFromId(workout);
+                    }
+                });
     }
 
     void getAllExercisesAsync(final OnTaskCompletedListener listener) {

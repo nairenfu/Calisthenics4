@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 import com.hylux.calisthenics4.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Entity(tableName = "activities")
 public class Workout implements Parcelable {
@@ -70,7 +71,7 @@ public class Workout implements Parcelable {
     }
 
     @Ignore
-    @SuppressWarnings("unchecked") //Clearly defined data types
+    @SuppressWarnings("unchecked") // Clearly defined data types
     public Workout(Parcel in) {
         id = in.readString();
         name = in.readString();
@@ -82,6 +83,24 @@ public class Workout implements Parcelable {
         targetGroups = in.readArrayList(Integer.class.getClassLoader());
         startTime = in.readLong();
         endTime = in.readLong();
+    }
+
+    @Ignore
+    @SuppressWarnings("unchecked") // Clearly defined data types
+    public Workout(HashMap<String, Object> data) {
+        id = (String) data.get("id");
+        name = (String) data.get("name");
+        authorId = (String) data.get("authorId");
+        brief = (String) data.get("brief");
+        routine = new ArrayList<>();
+        ArrayList<HashMap<String, Object>> routineMap = (ArrayList<HashMap<String, Object>>) data.get("routine");
+        if (routineMap != null) {
+            for (HashMap<String, Object> setMap : routineMap) {
+                routine.add(new Set(setMap));
+            }
+        }
+        equipments = (ArrayList<Integer>)data.get("equipments");
+        targetGroups = (ArrayList<Integer>) data.get("targetGroups");
     }
 
     public static final Creator<Workout> CREATOR = new Creator<Workout>() {

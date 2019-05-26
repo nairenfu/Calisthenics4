@@ -25,6 +25,10 @@ public class FirestoreViewModel extends AndroidViewModel {
         repository.addWorkout(workout);
     }
 
+    public void getWorkoutByIdAsync(String id, OnTaskCompletedListener listener) {
+        repository.getWorkoutById(id, listener);
+    }
+
     public void getAllExercises(OnTaskCompletedListener listener) {
         repository.getAllExercisesAsync(listener);
     }

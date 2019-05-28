@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.ProgressionViewHolder> implements AdapterView.OnItemSelectedListener {
+public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.ProgressionViewHolder> {
 
     private final Context context;
 
@@ -57,21 +57,12 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, progressionList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.progressionSpinner.setAdapter(adapter);
+        holder.progressionSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) context);
     }
 
     @Override
     public int getItemCount() {
         return progressions.size();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("SPINNER_SELECTED", view.toString());
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     class ProgressionViewHolder extends RecyclerView.ViewHolder {

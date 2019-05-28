@@ -8,6 +8,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.R;
@@ -23,7 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener {
+public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener, AdapterView.OnItemSelectedListener {
 
     private ActivitiesViewModel activitiesViewModel;
 
@@ -144,7 +146,6 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("PROGRESSION_UNIQUE", String.valueOf(uniqueExercises.size()));
         if (exerciseNameMap.size() == uniqueExercises.size()) {
             fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
-
             ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
 
             pagerAdapter.notifyDataSetChanged();
@@ -157,6 +158,17 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
 
     @Override
     public void onGetWorkoutFromId(Workout workout) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("SPINNER_SELECTED", view.toString());
+        Log.d("SPINNER_SELECTED", String.valueOf(position));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

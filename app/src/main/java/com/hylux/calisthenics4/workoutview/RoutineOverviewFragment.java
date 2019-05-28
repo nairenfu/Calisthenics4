@@ -91,6 +91,14 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
         routineOverviewFragmentListener = null;
     }
 
+    public RecyclerView.Adapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        this.adapter = adapter;
+    }
+
     void activate() {
         //BUG adapter is null on cold start. May apply to switching application
         ((SetAdapter) adapter).setActiveItem(0);

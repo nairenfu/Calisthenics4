@@ -13,16 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.R;
-import com.hylux.calisthenics4.objects.Exercise;
 import com.hylux.calisthenics4.objects.Workout;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class WorkoutOverviewFragment extends Fragment {
@@ -96,7 +93,11 @@ public class WorkoutOverviewFragment extends Fragment {
         startWorkoutCallback = null;
     }
 
-    public void createProgressionsRecycler(ProgressionAdapter adapter) {
+    public RecyclerView getProgressionsRecycler() {
+        return progressionsRecycler;
+    }
+
+    void createProgressionsRecycler(ProgressionAdapter adapter) {
         FrameLayout progressionContainer = Objects.requireNonNull(getView()).findViewById(R.id.progressionContainer);
 
         progressionsRecycler = new RecyclerView(Objects.requireNonNull(getContext()));

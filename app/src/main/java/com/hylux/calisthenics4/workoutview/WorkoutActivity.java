@@ -146,7 +146,9 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("PROGRESSION_UNIQUE", String.valueOf(uniqueExercises.size()));
         if (exerciseNameMap.size() == uniqueExercises.size()) {
             fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
-            ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
+            if (((WorkoutOverviewFragment) fragments.get(0)).getProgressionsRecycler() == null) {
+                ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
+            }
 
             pagerAdapter.notifyDataSetChanged();
             for (String exerciseId : uniqueExercises) {
@@ -165,6 +167,16 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d("SPINNER_SELECTED", view.toString());
         Log.d("SPINNER_SELECTED", String.valueOf(position));
+        Log.d("SPINNER_SELECTED", String.valueOf(id));
+
+        for (Set set : workout.getRoutine()) {
+            if (Objects.requireNonNull(exerciseMap.get(progressions.get(0))).getProgression().contains(set.getExerciseId())) {
+                set.setExerciseId(Objects.requireNonNull(exerciseMap.get(set.getExerciseId())).getProgression().get(position));
+                if (fragments.get(1).getClass() == RoutineOverviewFragment.class) {
+                    ((RoutineOverviewFragment) fragments.get(1)).getAdapter().notifyDataSetChanged();
+                }
+            }
+        }
     }
 
     @Override

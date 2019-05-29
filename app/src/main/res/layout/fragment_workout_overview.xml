@@ -72,13 +72,15 @@
         app:layout_constraintTop_toBottomOf="@+id/targetGroupsContainer"
         tools:text="Brief" />
 
-    <FrameLayout
-        android:id="@+id/progressionContainer"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/progressionRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:minHeight="16dp"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/briefView" />

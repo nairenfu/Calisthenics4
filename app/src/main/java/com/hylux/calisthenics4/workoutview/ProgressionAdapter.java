@@ -27,7 +27,13 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
     private ArrayList<String> progressions;
     private HashMap<String, Exercise> exercises;
 
-    public ProgressionAdapter(ArrayList<String> progressions, HashMap<String, Exercise> exercises, Context context) {
+    ProgressionAdapter(Context context) {
+        this.context = context;
+        progressions = new ArrayList<>();
+        exercises = new HashMap<>();
+    }
+
+    ProgressionAdapter(ArrayList<String> progressions, HashMap<String, Exercise> exercises, Context context) {
         this.progressions = progressions;
         this.exercises = exercises;
         this.context = context;
@@ -75,6 +81,12 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
     @Override
     public int getItemCount() {
         return progressions.size();
+    }
+
+    public void setData(ArrayList<String> progressions, HashMap<String, Exercise> exercises) {
+        this.progressions = progressions;
+        this.exercises = exercises;
+        notifyDataSetChanged();
     }
 
     class ProgressionViewHolder extends RecyclerView.ViewHolder {

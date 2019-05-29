@@ -22,6 +22,8 @@ import com.hylux.calisthenics4.R;
 
 public class ChooseWorkoutFragment extends Fragment {
 
+
+    //TODO have a loading flag
     private ChoiceListener choiceListener;
 
     private WorkoutsAdapter adapter;

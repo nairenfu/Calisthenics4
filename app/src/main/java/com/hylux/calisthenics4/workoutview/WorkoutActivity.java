@@ -39,8 +39,6 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     HashSet<String> uniqueExercises;
     ArrayList<String> progressions;
 
-    private int selectedItem;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +57,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
             workout = Debug.debugWorkout(); //TODO Change
         }
 
+        fragments = new ArrayList<>();
+
         //TODO Set flag OK once all data in
         //TODO What to do if not found
         uniqueExercises = new HashSet<>();
@@ -71,8 +71,9 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         }
         Log.d("UNIQUE_EXERCISES", uniqueExercises.toString());
 
-        fragments = new ArrayList<>();
-        fragments.add(WorkoutOverviewFragment.newInstance(workout));
+        if (fragments.size() == 0) {
+            fragments.add(WorkoutOverviewFragment.newInstance(workout, false, null, null));
+        }
         Log.d("FRAGMENTS", fragments.toString());
 
         viewPager = findViewById(R.id.swipeViewPager);
@@ -149,7 +150,13 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("PROGRESSION_UNIQUE", String.valueOf(uniqueExercises.size()));
         if (exerciseNameMap.size() == uniqueExercises.size()) {
             fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
-            ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
+//            ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
+            if (fragments.size() == 0) {
+                fragments.set(0, WorkoutOverviewFragment.newInstance(workout, true, progressions, exerciseMap));
+            } else {
+                ((WorkoutOverviewFragment) fragments.get(0)).setData(progressions, exerciseMap);
+            }
+//            ((WorkoutOverviewFragment) fragments.get(0)).getAdapter().setData(progressions, exerciseMap);
 
             pagerAdapter.notifyDataSetChanged();
             for (String exerciseId : uniqueExercises) {

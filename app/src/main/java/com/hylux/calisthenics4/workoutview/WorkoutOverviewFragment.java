@@ -79,9 +79,16 @@ public class WorkoutOverviewFragment extends Fragment {
 
     @Nullable
     @Override
+    @SuppressWarnings("unchecked") // Clearly defined data types
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("WORKOUT_OVERVIEW", "ON_CREATE_VIEW");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_workout_overview, container, false);
         this.rootView = rootView;
+
+        if (savedInstanceState != null) {
+            progressions = savedInstanceState.getStringArrayList("SAVED_PROGRESSIONS");
+            exercisesMap = (HashMap<String, Exercise>) savedInstanceState.getSerializable("SAVED_EXERCISES");
+        }
 
         TextView nameView = rootView.findViewById(R.id.nameView);
         nameView.setText(workout.getName());
@@ -103,7 +110,7 @@ public class WorkoutOverviewFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         progressionsRecycler.setLayoutManager(layoutManager);
 
-        if (withData) { // Or if exercises not 0 sized?
+        if (exercisesMap.size() != 0) { // Or if exercises not 0 sized?
             adapter = new ProgressionAdapter(progressions, exercisesMap, getContext());
         } else {
             adapter = new ProgressionAdapter(getContext());
@@ -120,6 +127,25 @@ public class WorkoutOverviewFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putStringArrayList("SAVED_PROGRESSIONS", progressions);
+        outState.putSerializable("SAVED_EXERCISES", exercisesMap);
+        Log.d("WORKOUT_OVERVIEW", "ON_SAVE");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("WORKOUT_OVERVIEW", "ON_RESUME");
+        Log.d("PROGRESSIONS", progressions.toString());
+        Log.d("EXERCISES", exercisesMap.toString());
+        Log.d("ADAPTER", adapter.toString());
+        Log.d("RECYCLER", progressionsRecycler.toString());
     }
 
     @Override

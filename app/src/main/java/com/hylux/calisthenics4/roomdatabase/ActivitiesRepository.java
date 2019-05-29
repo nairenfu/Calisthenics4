@@ -285,4 +285,19 @@ class ActivitiesRepository {
                     }
                 });
     }
+
+    void getAllWorkoutsAsync(final OnTaskCompletedListener listener) {
+        final ArrayList<Workout> workouts = new ArrayList<>();
+        fireStore.collection("workouts")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                            workouts.add(new Workout((HashMap<String, Object>) Objects.requireNonNull(documentSnapshot.getData())));
+                        }
+                        listener.onGetAllWorkouts(workouts);
+                    }
+                });
+    }
 }

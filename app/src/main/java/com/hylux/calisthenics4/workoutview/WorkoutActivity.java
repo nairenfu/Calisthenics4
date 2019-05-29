@@ -165,6 +165,11 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     }
 
     @Override
+    public void onGetAllWorkouts(ArrayList<Workout> workouts) {
+
+    }
+
+    @Override
     public void onLevelSelected(int parentPosition, int position) {
         Log.d("SPINNER", "PARENT" + parentPosition + ", POSITION" + position);
 

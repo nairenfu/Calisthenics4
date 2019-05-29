@@ -32,4 +32,8 @@ public class FirestoreViewModel extends AndroidViewModel {
     public void getAllExercises(OnTaskCompletedListener listener) {
         repository.getAllExercisesAsync(listener);
     }
+
+    public void getAllWorkouts(OnTaskCompletedListener listener) {
+        repository.getAllWorkoutsAsync(listener);
+    }
 }

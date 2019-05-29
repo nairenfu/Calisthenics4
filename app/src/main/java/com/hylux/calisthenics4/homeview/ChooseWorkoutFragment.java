@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.R;
@@ -21,6 +23,8 @@ import com.hylux.calisthenics4.R;
 public class ChooseWorkoutFragment extends Fragment {
 
     private ChoiceListener choiceListener;
+
+    private WorkoutsAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
@@ -66,12 +70,19 @@ public class ChooseWorkoutFragment extends Fragment {
                                 }
                             });
                             animator.start();
-                            choiceListener.onStartActivity();
+                            choiceListener.onStartActivity("cVboIWnFiDCszUf3sK5H");
                         }
                     });
                 }
             });
         }
+
+        RecyclerView workoutRecycler = rootView.findViewById(R.id.workoutRecycler);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        workoutRecycler.setLayoutManager(layoutManager);
+        workoutRecycler.setHasFixedSize(true);
+        adapter = new WorkoutsAdapter(choiceListener);
+        workoutRecycler.setAdapter(adapter);
 
         final FloatingActionButton createWorkoutButton = rootView.findViewById(R.id.createWorkoutButton);
         createWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +106,14 @@ public class ChooseWorkoutFragment extends Fragment {
         choiceListener = null;
     }
 
+    public WorkoutsAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(WorkoutsAdapter adapter) {
+        this.adapter = adapter;
+    }
+
     public static ChooseWorkoutFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -106,6 +125,6 @@ public class ChooseWorkoutFragment extends Fragment {
 
     public interface ChoiceListener {
         void onCreateWorkout();
-        void onStartActivity();
+        void onStartActivity(String id);
     }
 }

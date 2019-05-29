@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Set implements Parcelable {
 
-    private static final int DEFAULT_REPS = 10;
+    private static final int DEFAULT_REPS = 20;
 
     private String exerciseId;
     private int targetReps, actualReps;

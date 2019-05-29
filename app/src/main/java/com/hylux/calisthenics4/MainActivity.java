@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
         firestoreViewModel = new FirestoreViewModel(getApplication());
         firestoreViewModel.getAllExercises(this);
+        firestoreViewModel.getAllWorkouts(this); // Maybe should put this behind
 
         //Instantiate fragments
         fragments = new ArrayList<>();
@@ -120,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     }
 
     @Override
+    public void onGetAllWorkouts(ArrayList<Workout> workouts) {
+        if (fragments.get(1).getClass() == ChooseWorkoutFragment.class) {
+            ((ChooseWorkoutFragment) fragments.get(1)).getAdapter().setWorkouts(workouts);
+        }
+    }
+
+    @Override
     public void onCreateWorkout() {
         Intent createWorkoutIntent = new Intent(MainActivity.this, CreateWorkoutActivity.class);
 
@@ -132,13 +140,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     }
 
     @Override
-    public void onStartActivity() {
+    public void onStartActivity(String id) {
 //        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
 //        Workout debugWorkout = Debug.debugWorkout();
 //        debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
 //        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
 
-        firestoreViewModel.getWorkoutByIdAsync("cVboIWnFiDCszUf3sK5H", this);
+        firestoreViewModel.getWorkoutByIdAsync(id, this);
     }
 
     @Override

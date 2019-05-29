@@ -17,7 +17,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Ac
 
     private ArrayList<Workout> activities;
 
-    public ActivitiesAdapter(ArrayList<Workout> activities) {
+    ActivitiesAdapter(ArrayList<Workout> activities) {
         this.activities = activities;
     }
 
@@ -61,7 +61,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Ac
     }
 
     public void addActivity(Workout activity, int position) {
-        //TODO auto sort position
+        //TODO auto sort position (do not need to declare position explicitly)
         activities.add(position, activity);
         notifyDataSetChanged();
     }

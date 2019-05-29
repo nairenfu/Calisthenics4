@@ -2,19 +2,18 @@ package com.hylux.calisthenics4.workoutview;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Ignore;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.Debug;
@@ -29,7 +28,6 @@ public class WorkoutOverviewFragment extends Fragment {
 
     private Workout workout;
 
-    private boolean withData;
     private ArrayList<String> progressions;
     private HashMap<String, Exercise> exercisesMap;
 
@@ -38,10 +36,6 @@ public class WorkoutOverviewFragment extends Fragment {
 
     private StartWorkoutCallback startWorkoutCallback;
 
-    private View rootView;
-
-//    private FrameLayout.LayoutParams layoutParams;
-
     @Override
     @SuppressWarnings("unchecked") // Clearly defined data types
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +43,7 @@ public class WorkoutOverviewFragment extends Fragment {
 
         if (getArguments() != null) {
             workout = getArguments().getParcelable("EXTRA_WORKOUT");
-            withData = getArguments().getBoolean("EXTRA_WITH");
+            boolean withData = getArguments().getBoolean("EXTRA_WITH");
             if (withData) {
                 progressions = getArguments().getStringArrayList("EXTRA_PROGRESSIONS");
                 exercisesMap = (HashMap<String, Exercise>) getArguments().getSerializable("EXTRA_EXERCISES");
@@ -83,7 +77,6 @@ public class WorkoutOverviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("WORKOUT_OVERVIEW", "ON_CREATE_VIEW");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_workout_overview, container, false);
-        this.rootView = rootView;
 
         if (savedInstanceState != null) {
             progressions = savedInstanceState.getStringArrayList("SAVED_PROGRESSIONS");
@@ -139,16 +132,6 @@ public class WorkoutOverviewFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("WORKOUT_OVERVIEW", "ON_RESUME");
-        Log.d("PROGRESSIONS", progressions.toString());
-        Log.d("EXERCISES", exercisesMap.toString());
-        Log.d("ADAPTER", adapter.toString());
-        Log.d("RECYCLER", progressionsRecycler.toString());
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         startWorkoutCallback = null;
@@ -178,7 +161,7 @@ public class WorkoutOverviewFragment extends Fragment {
         this.exercisesMap = exercisesMap;
     }
 
-    public void setData(ArrayList<String> progressions, HashMap<String, Exercise> exercisesMap) {
+    void setData(ArrayList<String> progressions, HashMap<String, Exercise> exercisesMap) {
         this.progressions = progressions;
         this.exercisesMap = exercisesMap;
 
@@ -188,24 +171,6 @@ public class WorkoutOverviewFragment extends Fragment {
     public RecyclerView getProgressionsRecycler() {
         return progressionsRecycler;
     }
-
-//    void createProgressionsRecycler(ProgressionAdapter adapter) {
-//        //TODO Maybe use ViewTreeObserver?
-//        FrameLayout progressionContainer = rootView.findViewById(R.id.progressionContainer);
-////        progressionContainer.removeAllViews();
-//        //TODO BUG onDetach RecyclerView disappears
-//
-//        progressionsRecycler = new RecyclerView(Objects.requireNonNull(getContext()));
-//        this.adapter = adapter;
-//
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-//        progressionsRecycler.setLayoutManager(layoutManager);
-//
-//        progressionsRecycler.setAdapter(this.adapter);
-//
-//        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        progressionContainer.addView(progressionsRecycler, layoutParams);
-//    }
 
     static WorkoutOverviewFragment newInstance(@NonNull Workout workout, boolean withData, @Nullable ArrayList<String> progressions, @Nullable HashMap<String, Exercise> exercisesMap) {
 

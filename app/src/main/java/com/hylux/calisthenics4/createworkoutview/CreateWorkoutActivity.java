@@ -1,11 +1,5 @@
 package com.hylux.calisthenics4.createworkoutview;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
@@ -13,6 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.R;
@@ -27,12 +27,7 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
 
     private Workout workout;
     private ArrayList<Exercise> exercises;
-    private HashMap<String, String> exerciseNamesMap;
 
-    private RecyclerView exercisesRecycler;
-    private ExerciseAdapter exercisesAdapter;
-
-    private RecyclerView routineRecycler;
     private RoutineAdapter routineAdapter;
 
     @Override
@@ -41,7 +36,7 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
         setContentView(R.layout.activity_create_workout);
 
         workout = new Workout();
-        exerciseNamesMap = new HashMap<>();
+        HashMap<String, String> exerciseNamesMap = new HashMap<>();
 
         // Set up Exercises list
         if (getIntent() != null) {
@@ -107,16 +102,16 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
         });
 
         // Instantiate Exercises RecyclerView (View > LayoutManager > Adapter)
-        exercisesRecycler = exercisesContainer.findViewById(R.id.exercisesRecycler);
+        RecyclerView exercisesRecycler = exercisesContainer.findViewById(R.id.exercisesRecycler);
 
         RecyclerView.LayoutManager exercisesLayoutManager = new LinearLayoutManager(this);
         exercisesRecycler.setLayoutManager(exercisesLayoutManager);
 
-        exercisesAdapter = new ExerciseAdapter(exercises, this);
+        ExerciseAdapter exercisesAdapter = new ExerciseAdapter(exercises, this);
         exercisesRecycler.setAdapter(exercisesAdapter);
 
         //Instantiate Routine RecyclerView
-        routineRecycler = routineContainer.findViewById(R.id.routineRecycler);
+        RecyclerView routineRecycler = routineContainer.findViewById(R.id.routineRecycler);
 
         RecyclerView.LayoutManager routineLayoutManager = new LinearLayoutManager(this);
         routineRecycler.setLayoutManager(routineLayoutManager);

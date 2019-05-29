@@ -1,14 +1,15 @@
 package com.hylux.calisthenics4.workoutview;
 
 import android.os.CountDownTimer;
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Set;

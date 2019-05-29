@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,7 +63,6 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, progressionList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.progressionSpinner.setAdapter(adapter);
-//        holder.progressionSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) context);
         holder.progressionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,7 +81,7 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
         return progressions.size();
     }
 
-    public void setData(ArrayList<String> progressions, HashMap<String, Exercise> exercises) {
+    void setData(ArrayList<String> progressions, HashMap<String, Exercise> exercises) {
         this.progressions = progressions;
         this.exercises = exercises;
         notifyDataSetChanged();

@@ -1,6 +1,8 @@
 package com.hylux.calisthenics4;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,9 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hylux.calisthenics4.createworkoutview.CreateWorkoutActivity;
@@ -36,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     private ActivitiesViewModel activitiesViewModel;
     private FirestoreViewModel firestoreViewModel;
 
-    private ArrayList<Fragment> fragments;
+    private RecentActivitiesFragment recentActivitiesFragment;
+    private ChooseWorkoutFragment chooseWorkoutFragment;
     private ViewPager viewPager;
-    private PagerAdapter adapter;
 
     private boolean withExercises = false;
     private ArrayList<Exercise> exercises;
@@ -61,13 +60,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
         firestoreViewModel.getAllWorkouts(this); // Maybe should put this behind
 
         //Instantiate fragments
-        fragments = new ArrayList<>();
-        fragments.add(RecentActivitiesFragment.newInstance(new ArrayList<Workout>()));
-        fragments.add(ChooseWorkoutFragment.newInstance());
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        recentActivitiesFragment = RecentActivitiesFragment.newInstance(new ArrayList<Workout>());
+        fragments.add(recentActivitiesFragment);
+        chooseWorkoutFragment = ChooseWorkoutFragment.newInstance();
+        fragments.add(chooseWorkoutFragment);
 
         //Set up SwipeViewPager
         viewPager = findViewById(R.id.swipeViewPager);
-        adapter = new SwipeViewPagerAdapter(getSupportFragmentManager(), fragments);
+        PagerAdapter adapter = new SwipeViewPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
     }
@@ -93,10 +94,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
     @Override
     public void onGetRecentActivities(ArrayList<Workout> activities) {
-
-        if (fragments.get(0).getClass() == RecentActivitiesFragment.class) {
-            ((RecentActivitiesFragment) fragments.get(0)).setActivities(activities);
-            ((RecentActivitiesFragment) fragments.get(0)).getSwipeRefreshLayout().setRefreshing(false);
+        if (recentActivitiesFragment != null) {
+            recentActivitiesFragment.setActivities(activities);
+            recentActivitiesFragment.getSwipeRefreshLayout().setRefreshing(false);
         }
     }
 
@@ -117,13 +117,18 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     public void onGetWorkoutFromId(Workout workout) {
         Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
         debugActivityIntent.putExtra("EXTRA_WORKOUT", workout);
+
+        if (chooseWorkoutFragment != null) {
+            chooseWorkoutFragment.setLoading(false);
+        }
+
         startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
     }
 
     @Override
     public void onGetAllWorkouts(ArrayList<Workout> workouts) {
-        if (fragments.get(1).getClass() == ChooseWorkoutFragment.class) {
-            ((ChooseWorkoutFragment) fragments.get(1)).getAdapter().setWorkouts(workouts);
+        if (chooseWorkoutFragment != null) {
+            chooseWorkoutFragment.getAdapter().setWorkouts(workouts);
         }
     }
 
@@ -141,18 +146,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
     @Override
     public void onStartActivity(String id) {
-//        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
-//        Workout debugWorkout = Debug.debugWorkout();
-//        debugActivityIntent.putExtra("EXTRA_WORKOUT", debugWorkout);
-//        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
-
+        if (chooseWorkoutFragment != null) {
+            chooseWorkoutFragment.setLoading(true);
+        }
         firestoreViewModel.getWorkoutByIdAsync(id, this);
     }
 
     @Override
     public void onRefresh() {
-        if (fragments.get(0).getClass() == RecentActivitiesFragment.class) {
-//            ((RecentActivitiesFragment) fragments.get(0)).getSwipeRefreshLayout().setRefreshing(true);
+        if (recentActivitiesFragment != null) {
             activitiesViewModel.getRecentActivities(5, this);
         }
     }

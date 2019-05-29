@@ -1,7 +1,6 @@
 package com.hylux.calisthenics4.roomdatabase;
 
 import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -9,6 +8,7 @@ import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("WeakerAccess") // TypeConverters must be Public
 public class Converters {
 
     @TypeConverter

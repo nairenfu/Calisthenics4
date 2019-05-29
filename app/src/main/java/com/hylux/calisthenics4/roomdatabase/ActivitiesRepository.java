@@ -14,9 +14,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.objects.Exercise;
-import com.hylux.calisthenics4.objects.Set;
 import com.hylux.calisthenics4.objects.Workout;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ import java.util.Objects;
 
 class ActivitiesRepository {
 
-    public static final int ROOM = 0, FIRE = 1;
+    static final int ROOM = 0, FIRE = 1;
 
     private ActivityDao activityDao;
     private LiveData<List<Workout>> allActivities;

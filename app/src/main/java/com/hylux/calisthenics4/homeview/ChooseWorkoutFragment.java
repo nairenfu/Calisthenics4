@@ -22,9 +22,8 @@ import com.hylux.calisthenics4.R;
 
 public class ChooseWorkoutFragment extends Fragment {
 
-
-    //TODO have a loading flag
     private ChoiceListener choiceListener;
+    private boolean loading = false;
 
     private WorkoutsAdapter adapter;
 
@@ -114,6 +113,16 @@ public class ChooseWorkoutFragment extends Fragment {
 
     public void setAdapter(WorkoutsAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+
+        adapter.setLoading(loading);
     }
 
     public static ChooseWorkoutFragment newInstance() {

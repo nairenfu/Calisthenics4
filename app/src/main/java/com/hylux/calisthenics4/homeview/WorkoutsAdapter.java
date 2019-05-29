@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hylux.calisthenics4.R;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 public class WorkoutsAdapter extends RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder> {
 
     private ChooseWorkoutFragment.ChoiceListener listener;
+    private boolean loading;
 
     private ArrayList<Workout> workouts;
     //TODO Change to a simpler data structure
@@ -45,7 +45,9 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<WorkoutsAdapter.Workou
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onStartActivity(workouts.get(position).getId());
+                if (!loading) {
+                    listener.onStartActivity(workouts.get(position).getId());
+                }
             }
         });
     }
@@ -53,6 +55,14 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<WorkoutsAdapter.Workou
     @Override
     public int getItemCount() {
         return workouts.size();
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    void setLoading(boolean loading) {
+        this.loading = loading;
     }
 
     public ArrayList<Workout> getWorkouts() {

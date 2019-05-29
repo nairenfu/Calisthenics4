@@ -1,16 +1,13 @@
 package com.hylux.calisthenics4.workoutview;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.R;
@@ -59,7 +56,6 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
 
         fragments = new ArrayList<>();
 
-        //TODO Set flag OK once all data in
         //TODO What to do if not found
         uniqueExercises = new HashSet<>();
         progressions = new ArrayList<>();

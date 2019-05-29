@@ -1,8 +1,9 @@
 package com.hylux.calisthenics4.workoutview;
 
 import android.content.Context;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.AttributeSet;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class RoutineRecyclerLayoutManager extends LinearLayoutManager {
 

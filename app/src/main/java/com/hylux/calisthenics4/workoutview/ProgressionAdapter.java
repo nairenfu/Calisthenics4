@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +44,7 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProgressionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ProgressionViewHolder holder, int position) {
         String currentExerciseId = progressions.get(position);
         ArrayList<String> progressionIds = Objects.requireNonNull(exercises.get(currentExerciseId)).getProgression(); // Will not be null
         Log.d("PROG_ADAP_IDS", progressionIds.toString());
@@ -57,7 +58,18 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, progressionList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.progressionSpinner.setAdapter(adapter);
-        holder.progressionSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) context);
+//        holder.progressionSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) context);
+        holder.progressionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((OnLevelSelectedListener) context).onLevelSelected(holder.getAdapterPosition(), position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -73,5 +85,9 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
             super(itemView);
             progressionSpinner = itemView.findViewById(R.id.progressionSpinner);
         }
+    }
+
+    public interface OnLevelSelectedListener {
+        void onLevelSelected(int parentPosition, int position);
     }
 }

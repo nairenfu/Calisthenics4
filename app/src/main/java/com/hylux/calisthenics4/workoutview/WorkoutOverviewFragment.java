@@ -31,6 +31,10 @@ public class WorkoutOverviewFragment extends Fragment {
 
     private StartWorkoutCallback startWorkoutCallback;
 
+    private View rootView;
+
+//    private FrameLayout.LayoutParams layoutParams;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +57,16 @@ public class WorkoutOverviewFragment extends Fragment {
         } catch (Exception e) {
             Log.e("CALLBACK", "Implement StartWorkoutCallback");
         }
+        if (adapter != null) {
+            createProgressionsRecycler(adapter);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_workout_overview, container, false);
+        this.rootView = rootView;
 
         TextView nameView = rootView.findViewById(R.id.nameView);
         nameView.setText(workout.getName());
@@ -98,7 +106,10 @@ public class WorkoutOverviewFragment extends Fragment {
     }
 
     void createProgressionsRecycler(ProgressionAdapter adapter) {
-        FrameLayout progressionContainer = Objects.requireNonNull(getView()).findViewById(R.id.progressionContainer);
+        //TODO Maybe use ViewTreeObserver?
+        FrameLayout progressionContainer = rootView.findViewById(R.id.progressionContainer);
+//        progressionContainer.removeAllViews();
+        //TODO BUG onDetach RecyclerView disappears
 
         progressionsRecycler = new RecyclerView(Objects.requireNonNull(getContext()));
         this.adapter = adapter;

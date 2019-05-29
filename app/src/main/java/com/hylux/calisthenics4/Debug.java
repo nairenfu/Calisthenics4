@@ -112,4 +112,109 @@ public class Debug {
 
         return new ArrayList<>(Arrays.asList(scapularPulls, archHangs, pullUpNegatives, pullUp));
     }
+
+    public static ArrayList<Exercise> squatProgression() {
+        ArrayList<Integer> equipments = new ArrayList<>(Collections.singletonList(0));
+
+        ArrayList<String> progression = new ArrayList<>(Arrays.asList(
+                "N3KRTUu6D6aGFotGPBpu",
+                "H2LQHcUORfs40nxdPDoY",
+                "aD275wPXHDfRecVRVODq",
+                "OTI0jlL4FYJVlF5AIHFD",
+                "VLHGJfS1hskU2fClfh7p",
+                "BGQL73T6y9GQYXZTebjr",
+                "Vz6uhv1sKpbVYQeiU8A1"
+                ));
+
+        Exercise assistedSquats = new Exercise("Assisted Squats");
+        assistedSquats.setId("N3KRTUu6D6aGFotGPBpu");
+        assistedSquats.setAim("Level 1 of progressive legs strengthening");
+        assistedSquats.setEquipments(equipments);
+        assistedSquats.setSteps(new ArrayList<String>(Arrays.asList(
+                "Grab something in front of you and use your hands to assist in the squat.",
+                "Reduce assistance over time."
+        )));
+        assistedSquats.setProgressive(true);
+        assistedSquats.setProgression(progression);
+
+
+        Exercise squats = new Exercise("Squats");
+        squats.setId("H2LQHcUORfs40nxdPDoY");
+        squats.setAim("Level 2 of progressive legs strengthening");
+        squats.setEquipments(equipments);
+        squats.setSteps(new ArrayList<String>(Arrays.asList(
+                "Stand up straight at the top",
+                "Go as low as you can, preferably until the hips are below the knees",
+                "Dig your big toe and heel into the ground",
+                "Keep your knee in-line with your toes",
+                "Don't let the knees come inward on either the descend or the ascend; think about pushing the knees out"
+        )));
+        squats.setProgressive(true);
+        squats.setProgression(progression);
+
+        Exercise splitSquats = new Exercise("Split Squats");
+        splitSquats.setId("aD275wPXHDfRecVRVODq");
+        splitSquats.setAim("Level 3 of progressive legs strengthening");
+        splitSquats.setEquipments(equipments);
+        splitSquats.setSteps(new ArrayList<String>(Arrays.asList(
+                "Stand with one leg forward, other leg back",
+                "Only toes of your back leg touches the ground",
+                "Lower yourself until both legs are at 90 degrees",
+                "Remain in the split stance throughout"
+        )));
+        splitSquats.setProgressive(true);
+        splitSquats.setProgression(progression);
+
+        Exercise bulgarianSplitSquats = new Exercise("Bulgarian Split Squats");
+        bulgarianSplitSquats.setId("OTI0jlL4FYJVlF5AIHFD");
+        bulgarianSplitSquats.setAim("Level 4 of progressive legs strengthening");
+        bulgarianSplitSquats.setEquipments(new ArrayList<Integer>(Collections.singletonList(2)));
+        bulgarianSplitSquats.setSteps(new ArrayList<String>(Arrays.asList(
+                "Rest your rear leg on a bench",
+                "Go as low as you can",
+                "You can progress this further by elevating both your legs"
+        )));
+        bulgarianSplitSquats.setProgressive(true);
+        bulgarianSplitSquats.setProgression(progression);
+
+        Exercise shrimpSquats = new Exercise("Shrimp Squats");
+        shrimpSquats.setId("VLHGJfS1hskU2fClfh7p");
+        shrimpSquats.setAim("Level 5(a) of progressive legs strengthening");
+        shrimpSquats.setEquipments(equipments);
+        shrimpSquats.setSteps(new ArrayList<String>(Arrays.asList(
+                "Raise your rear leg off the ground",
+                "Lower yourself until your knees and toes touch the ground",
+                "You can progress this further by having only your knees touch the ground"
+        )));
+        shrimpSquats.setProgressive(true);
+        shrimpSquats.setProgression(progression);
+
+        Exercise stepUps = new Exercise("Step-Ups");
+        stepUps.setId("BGQL73T6y9GQYXZTebjr");
+        stepUps.setAim("Level 5(b) of progressive legs strengthening");
+        stepUps.setEquipments(equipments);
+        stepUps.setSteps(new ArrayList<String>(Arrays.asList(
+                "Putting one leg up on a high object in front of you",
+                "Put all of your weight on the front leg and step up to the object",
+                "Aim to minimize pushing off with the back leg",
+                "To make it harder, increase the height of the object (until your back leg leaves the ground), or hold some weight"
+        )));
+        stepUps.setProgressive(true);
+        stepUps.setProgression(progression);
+
+        Exercise pistolSquats = new Exercise("Pistol Squats");
+        pistolSquats.setId("Vz6uhv1sKpbVYQeiU8A1");
+        pistolSquats.setAim("Level 5(c) of progressive legs strengthening");
+        pistolSquats.setEquipments(equipments);
+        pistolSquats.setSteps(new ArrayList<String>(Arrays.asList(
+                "Start with one leg elevated, the other in the air",
+                "Go as low as possible",
+                "Extend your leg in front of you as you lower yourself",
+                "Progress this by increasing your range of motion"
+        )));
+        pistolSquats.setProgressive(true);
+        pistolSquats.setProgression(progression);
+
+        return new ArrayList<>(Arrays.asList(assistedSquats, squats, splitSquats, bulgarianSplitSquats, shrimpSquats, stepUps, pistolSquats));
+    }
 }

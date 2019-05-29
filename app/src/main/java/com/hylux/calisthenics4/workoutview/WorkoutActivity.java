@@ -2,6 +2,7 @@ package com.hylux.calisthenics4.workoutview;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener, AdapterView.OnItemSelectedListener {
+public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener, ProgressionAdapter.OnLevelSelectedListener {
 
     private ActivitiesViewModel activitiesViewModel;
 
@@ -37,6 +38,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     private HashMap<String, String> exerciseNameMap;
     HashSet<String> uniqueExercises;
     ArrayList<String> progressions;
+
+    private int selectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,9 +149,7 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("PROGRESSION_UNIQUE", String.valueOf(uniqueExercises.size()));
         if (exerciseNameMap.size() == uniqueExercises.size()) {
             fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
-            if (((WorkoutOverviewFragment) fragments.get(0)).getProgressionsRecycler() == null) {
-                ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
-            }
+            ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
 
             pagerAdapter.notifyDataSetChanged();
             for (String exerciseId : uniqueExercises) {
@@ -164,23 +165,16 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("SPINNER_SELECTED", view.toString());
-        Log.d("SPINNER_SELECTED", String.valueOf(position));
-        Log.d("SPINNER_SELECTED", String.valueOf(id));
+    public void onLevelSelected(int parentPosition, int position) {
+        Log.d("SPINNER", "PARENT" + parentPosition + ", POSITION" + position);
 
         for (Set set : workout.getRoutine()) {
-            if (Objects.requireNonNull(exerciseMap.get(progressions.get(0))).getProgression().contains(set.getExerciseId())) {
+            if (Objects.requireNonNull(exerciseMap.get(progressions.get(parentPosition))).getProgression().contains(set.getExerciseId())) {
                 set.setExerciseId(Objects.requireNonNull(exerciseMap.get(set.getExerciseId())).getProgression().get(position));
                 if (fragments.get(1).getClass() == RoutineOverviewFragment.class) {
                     ((RoutineOverviewFragment) fragments.get(1)).getAdapter().notifyDataSetChanged();
                 }
             }
         }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Exercise implements Parcelable {
 
     @Ignore
-    public static final ArrayList<String> EQUIPMENT = new ArrayList<>(Arrays.asList("NOTHING", "PULL_UP_BAR"));
+    public static final ArrayList<String> EQUIPMENT = new ArrayList<>(Arrays.asList("NOTHING", "PULL_UP_BAR", "BENCH"));
     @Ignore
     public static final ArrayList<String> TARGET_GROUP = new ArrayList<>(Arrays.asList("NONE", "UPPER_BODY", "LOWER_BODY"));
 

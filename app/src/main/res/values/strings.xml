@@ -11,4 +11,5 @@
     <string name="choose">choose</string>
     <string name="name">Name</string>
     <string name="brief_prompt">Overview and description of what this workout is trying to achieve, who should use this, etc.</string>
+    <string name="default_reps_num">10</string>
 </resources>

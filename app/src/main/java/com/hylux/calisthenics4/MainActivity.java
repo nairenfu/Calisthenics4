@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     @Override
     public void onGetAllWorkouts(ArrayList<Workout> workouts) {
         if (chooseWorkoutFragment != null) {
+            Log.d("CWF_ADAPTER", chooseWorkoutFragment.getAdapter().toString()); // This is null
+            Log.d("CWF_WORKOUTS", workouts.toString());
             chooseWorkoutFragment.getAdapter().setWorkouts(workouts);
         }
     }

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -118,6 +119,11 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
 
         routineAdapter = new RoutineAdapter(workout.getRoutine(), exerciseNamesMap);
         routineRecycler.setAdapter(routineAdapter);
+
+        // Instantiate ItemTouchHelper for reordering/removing exercises from RoutineRecycler
+        ItemTouchHelper.Callback touchHelperCallback = new RoutineItemTouchHelperCallback(routineAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(touchHelperCallback);
+        touchHelper.attachToRecyclerView(routineRecycler);
 
         // Finish Creating
         FloatingActionButton finishButton = findViewById(R.id.finishButton);

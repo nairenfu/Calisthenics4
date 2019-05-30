@@ -26,7 +26,7 @@ public interface ActivityDao {
     @Query("SELECT * FROM exercises WHERE id=:id LIMIT 1")
     Exercise getExerciseById(String id);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    //TODO replace strategy to REPLACE
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    //TODO Have a better replace strategy
     void insertExercises(Exercise... exercises);
 }

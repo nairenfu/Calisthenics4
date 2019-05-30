@@ -23,6 +23,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
+// TODO Fix: need to save which level of progressions are chosen, as of now onCreateView() will reset selection.
+// TODO Generation: need to sort out how to generate exercise briefs. If not too many will be generated
+// TODO New: explore section: explore exercises and their briefs.
+
 public class WorkoutActivity extends FragmentActivity implements OnTaskCompletedListener, StartWorkoutCallback, RoutineOverviewFragment.RoutineOverviewFragmentListener, ProgressionAdapter.OnLevelSelectedListener {
 
     private ActivitiesViewModel activitiesViewModel;

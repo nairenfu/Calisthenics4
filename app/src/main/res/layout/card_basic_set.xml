@@ -33,12 +33,18 @@
                 android:padding="16dp"
                 tools:text="Pushup" />
 
-            <TextView
+            <EditText
                 android:id="@+id/reps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                tools:text="10" />
+                android:text="@string/default_reps_num"
+                android:hint="@string/default_reps_num"
+                android:autofillHints="@string/actual_reps"
+                android:focusedByDefault="false"
+                android:imeOptions="actionDone"
+                tools:targetApi="o"
+                android:inputType="number" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

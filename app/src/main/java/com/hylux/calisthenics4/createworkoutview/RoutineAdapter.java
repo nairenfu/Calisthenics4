@@ -1,8 +1,12 @@
 package com.hylux.calisthenics4.createworkoutview;
 
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,9 +16,10 @@ import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
-public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineViewHolder> {
+public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineViewHolder> implements ItemTouchHelperAdapter{
 
     private ArrayList<Set> routine;
     private HashMap<String, String> exerciseNamesMap;
@@ -32,12 +37,29 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RoutineViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RoutineViewHolder holder, int position) {
         TextView nameView = holder.itemView.findViewById(R.id.exerciseName);
-        TextView repsView = holder.itemView.findViewById(R.id.reps);
+        final EditText repsView = holder.itemView.findViewById(R.id.reps);
 
         nameView.setText(exerciseNamesMap.get(routine.get(position).getExerciseId()));
+        nameView.clearFocus();
         repsView.setText(String.valueOf(routine.get(position).getTargetReps()));
+        repsView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                    case EditorInfo.IME_ACTION_NEXT:
+                    case EditorInfo.IME_ACTION_PREVIOUS:
+                        Log.d("ACTION_ID", String.valueOf(actionId));
+                        routine.get(holder.getAdapterPosition()).setTargetReps(Integer.valueOf(repsView.getText().toString()));
+                        notifyItemChanged(holder.getAdapterPosition());
+                        v.clearFocus();
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -47,6 +69,27 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
 
     ArrayList<Set> getRoutine() {
         return routine;
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(routine, i, i+1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(routine, i, i-1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        routine.remove(position);
+        notifyItemRemoved(position);
     }
 
     class RoutineViewHolder extends RecyclerView.ViewHolder {

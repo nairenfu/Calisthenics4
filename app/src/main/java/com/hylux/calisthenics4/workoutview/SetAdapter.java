@@ -1,10 +1,14 @@
 package com.hylux.calisthenics4.workoutview;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,18 +34,18 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
     static class SetViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView exerciseNameView, repsView, timeView;
-        private View itemView, expandedView;
-        private EditText editActualRepsView;
+        private View itemView;
+        private TextView exerciseNameView, repsView;
+        private ImageView detailsButton;
+        private FrameLayout expandedLayout;
 
         SetViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
             exerciseNameView = itemView.findViewById(R.id.exerciseName);
             repsView = itemView.findViewById(R.id.reps);
-            expandedView = itemView.findViewById(R.id.expandedView);
-            editActualRepsView = expandedView.findViewById(R.id.editActualReps);
-            timeView = expandedView.findViewById(R.id.timeView);
+            detailsButton = itemView.findViewById(R.id.detailsButton);
+            expandedLayout = itemView.findViewById(R.id.expandedLayout);
         }
 
         void setExerciseName(String exerciseName) {
@@ -52,25 +56,32 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
             repsView.setText(String.valueOf(reps));
         }
 
-        void setActualReps(int reps) {
-            editActualRepsView.setText(String.valueOf(reps));
-        }
-
-        int getActualReps() {
-            return Integer.valueOf(editActualRepsView.getText().toString());
-        }
-
-        void setTimeView(String time) {
-            timeView.setText(time);
-        }
-
-        void setVisible(boolean visible) {
+        void setVisible(boolean visible, int type) {
             if (visible) {
-                itemView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
-                expandedView.setVisibility(View.VISIBLE);
+                itemView.setLayoutParams(
+                        new ConstraintLayout.LayoutParams(
+                                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                                ConstraintLayout.LayoutParams.MATCH_PARENT));
+                expandedLayout.removeAllViews();
+
+//                detailsButton.setVisibility(View.GONE);
+//                detailsButton.setVisibility(View.VISIBLE);
+
+                View expanded;
+                if (type == Set.REPS) {
+                    expanded = LayoutInflater.from(expandedLayout.getContext()).inflate(R.layout.container_reps, expandedLayout, false);
+                } else {
+                    expanded = LayoutInflater.from(expandedLayout.getContext()).inflate(R.layout.container_time, expandedLayout, false);
+                }
+
+                expandedLayout.addView(expanded);
             } else {
-                itemView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
-                expandedView.setVisibility(View.GONE);
+                itemView.setLayoutParams(
+                        new ConstraintLayout.LayoutParams(
+                                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                                ConstraintLayout.LayoutParams.WRAP_CONTENT));
+                expandedLayout.removeAllViews();
+//                detailsButton.setVisibility(View.GONE);
             }
         }
     }
@@ -78,7 +89,6 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
     SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, NextSetCallback listener) {
         this.routine = routine;
         this.exerciseNamesMap = exerciseNamesMap;
-
         this.listener = listener;
     }
 
@@ -91,31 +101,48 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final SetAdapter.SetViewHolder setViewHolder, int position) {
-        String setId = routine.get(position).getExerciseId();
+        final String setId = routine.get(position).getExerciseId();
         setViewHolder.setExerciseName(exerciseNamesMap.get(setId));
+
+        setViewHolder.detailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("DETAILS", setId);
+            }
+        });
 
         int targetReps = routine.get(position).getTargetReps();
         setViewHolder.setReps(targetReps);
-        setViewHolder.setActualReps(targetReps);
 
         if (activeItem == position) {
-            setViewHolder.setVisible(true);
-            if (setId.equals("PXgTd7HydzIJhD8goXj9")) { //if setId is rest
-                timer = new CountDownTimer((long) targetReps * 1000, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        setViewHolder.setTimeView((int) millisUntilFinished/1000 + "s");
-                    }
+            int type = routine.get(position).getType();
+            setViewHolder.setVisible(true, type);
 
-                    @Override
-                    public void onFinish() {
-                        listener.next();
-                    }
-                };
-                timer.start();
+            // TODO set a Switch group to switch between time and reps
+
+            switch (type) {
+                case Set.REPS:
+                    EditText actualRepsView = setViewHolder.itemView.findViewById(R.id.editActualReps);
+                    actualRepsView.setText(String.valueOf(routine.get(position).getActualReps()));
+                    break;
+
+                case Set.TIME:
+                    timer = new CountDownTimer((long) targetReps * 1000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            TextView timeView = setViewHolder.itemView.findViewById(R.id.timeView);
+                            timeView.setText(String.valueOf((int) millisUntilFinished / 1000));
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            listener.next();
+                        }
+                    };
+                    timer.start();
             }
         } else {
-            setViewHolder.setVisible(false);
+            setViewHolder.setVisible(false, 0);
         }
     }
 

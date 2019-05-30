@@ -11,23 +11,36 @@ public class Set implements Parcelable {
 
     private static final int DEFAULT_REPS = 20;
 
+    public static final int REPS = 0, TIME = 1;
+
     private String exerciseId;
-    private int targetReps, actualReps;
+    private int targetReps, actualReps, type;
 
     public Set(String exerciseId) {
         this.exerciseId = exerciseId;
+        this.type = REPS;
         this.targetReps = DEFAULT_REPS;
         this.actualReps = 0;
     }
 
     public Set(String exerciseId, int targetReps) {
         this.exerciseId = exerciseId;
+        this.type = REPS;
+        this.targetReps = targetReps;
+        this.actualReps = 0;
+    }
+
+    public Set(String exerciseId, int type, int targetReps) {
+        this.exerciseId = exerciseId;
+        this.type = type;
         this.targetReps = targetReps;
         this.actualReps = 0;
     }
 
     public Set(HashMap<String, Object> data) {
         exerciseId = (String) data.get("exerciseId");
+        Long typeLong = (long) data.get("type");
+        type = typeLong.intValue();
         Long targetLong = (long) data.get("targetReps");
         targetReps = targetLong.intValue();
         Long actualLong = (long) data.get("actualReps");
@@ -36,6 +49,7 @@ public class Set implements Parcelable {
 
     protected Set(Parcel in) {
         exerciseId = in.readString();
+        type = in.readInt();
         targetReps = in.readInt();
         actualReps = in.readInt();
     }
@@ -58,6 +72,14 @@ public class Set implements Parcelable {
 
     public void setExerciseId(String exerciseId) {
         this.exerciseId = exerciseId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getTargetReps() {
@@ -85,6 +107,7 @@ public class Set implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeString(exerciseId);
+        dest.writeInt(type);
         dest.writeInt(targetReps);
         dest.writeInt(actualReps);
     }
@@ -96,6 +119,7 @@ public class Set implements Parcelable {
                 "exerciseId='" + exerciseId + '\'' +
                 ", targetReps=" + targetReps +
                 ", actualReps=" + actualReps +
+                ", type=" + type +
                 '}';
     }
 }

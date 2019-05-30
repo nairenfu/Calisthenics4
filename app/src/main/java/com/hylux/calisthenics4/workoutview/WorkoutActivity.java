@@ -94,6 +94,7 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     public void startWorkout() {
         Log.d("START", "WORKOUT");
         viewPager.setCurrentItem(1, true);
+        ((ToggleSwipeViewPager) viewPager).setCanSwipe(false);
         workout.setStartTime(System.currentTimeMillis());
 
         ((RoutineOverviewFragment) fragments.get(1)).activate();

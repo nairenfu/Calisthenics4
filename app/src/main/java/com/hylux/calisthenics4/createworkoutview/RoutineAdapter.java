@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +43,23 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         final EditText repsView = holder.itemView.findViewById(R.id.reps);
 
         nameView.setText(exerciseNamesMap.get(routine.get(position).getExerciseId()));
-        nameView.clearFocus();
+        repsView.clearFocus();
+
+        // Instantiate Type toggle
+        holder.toggleTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.toggleTypeButton.isChecked()) {
+                    // Exercise is Time based
+                    routine.get(holder.getAdapterPosition()).setType(Set.TIME);
+                } else {
+                    // Exercise is Reps based
+                    routine.get(holder.getAdapterPosition()).setType(Set.REPS);
+                }
+                notifyItemChanged(holder.getAdapterPosition());
+            }
+        });
+
         repsView.setText(String.valueOf(routine.get(position).getTargetReps()));
         repsView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -96,6 +113,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
 
         View itemView;
         TextView nameView, repsView;
+        ToggleButton toggleTypeButton;
 
         RoutineViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,6 +121,7 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
 
             nameView = itemView.findViewById(R.id.exerciseName);
             repsView = itemView.findViewById(R.id.reps);
+            toggleTypeButton = itemView.findViewById(R.id.toggleType);
         }
     }
 }

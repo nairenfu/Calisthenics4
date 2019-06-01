@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,7 +22,7 @@ import java.util.HashMap;
 
 public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
 
-    private NextSetCallback listener;
+    private SetAdapterListener listener;
 
     private int activeItem = -1;
 
@@ -64,9 +63,6 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
                                 ConstraintLayout.LayoutParams.MATCH_PARENT));
                 expandedLayout.removeAllViews();
 
-//                detailsButton.setVisibility(View.GONE);
-//                detailsButton.setVisibility(View.VISIBLE);
-
                 View expanded;
                 if (type == Set.REPS) {
                     expanded = LayoutInflater.from(expandedLayout.getContext()).inflate(R.layout.container_reps, expandedLayout, false);
@@ -81,12 +77,11 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
                                 ConstraintLayout.LayoutParams.MATCH_PARENT,
                                 ConstraintLayout.LayoutParams.WRAP_CONTENT));
                 expandedLayout.removeAllViews();
-//                detailsButton.setVisibility(View.GONE);
             }
         }
     }
 
-    SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, NextSetCallback listener) {
+    SetAdapter(ArrayList<Set> routine, HashMap<String, String> exerciseNamesMap, SetAdapterListener listener) {
         this.routine = routine;
         this.exerciseNamesMap = exerciseNamesMap;
         this.listener = listener;
@@ -104,10 +99,12 @@ public class SetAdapter extends RecyclerView.Adapter<SetAdapter.SetViewHolder> {
         final String setId = routine.get(position).getExerciseId();
         setViewHolder.setExerciseName(exerciseNamesMap.get(setId));
 
+        setViewHolder.detailsButton.setImageResource(R.drawable.ic_help_black_24dp); // Somehow must still set the image
         setViewHolder.detailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("DETAILS", setId);
+                listener.onDetailsRequested(setId);
             }
         });
 

@@ -83,6 +83,12 @@ public class WorkoutOverviewFragment extends Fragment {
             exercisesMap = (HashMap<String, Exercise>) savedInstanceState.getSerializable("SAVED_EXERCISES");
         }
 
+        if ((exercisesMap != null ? exercisesMap.size() : 0) != 0) { // Or if exercises not 0 sized?
+            adapter = new ProgressionAdapter(progressions, exercisesMap, getContext());
+        } else {
+            adapter = new ProgressionAdapter(getContext());
+        }
+
         TextView nameView = rootView.findViewById(R.id.nameView);
         nameView.setText(workout.getName());
 
@@ -102,12 +108,6 @@ public class WorkoutOverviewFragment extends Fragment {
         progressionsRecycler = rootView.findViewById(R.id.progressionRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         progressionsRecycler.setLayoutManager(layoutManager);
-
-        if (exercisesMap.size() != 0) { // Or if exercises not 0 sized?
-            adapter = new ProgressionAdapter(progressions, exercisesMap, getContext());
-        } else {
-            adapter = new ProgressionAdapter(getContext());
-        }
         progressionsRecycler.setAdapter(adapter);
 
 
@@ -120,6 +120,13 @@ public class WorkoutOverviewFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        adapter.setData(progressions, exercisesMap);
     }
 
     @Override
@@ -165,7 +172,9 @@ public class WorkoutOverviewFragment extends Fragment {
         this.progressions = progressions;
         this.exercisesMap = exercisesMap;
 
-        adapter.setData(progressions, exercisesMap);
+        if (adapter != null) {
+            adapter.setData(progressions, exercisesMap);
+        }
     }
 
     public RecyclerView getProgressionsRecycler() {

@@ -21,14 +21,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class RoutineOverviewFragment extends Fragment implements NextSetCallback {
+public class RoutineOverviewFragment extends Fragment implements SetAdapterListener {
 
     private RoutineOverviewFragmentListener routineOverviewFragmentListener;
 
     private ArrayList<Set> routine;
     private HashMap<String, String> exerciseNamesMap;
 
-    private RecyclerView.Adapter adapter;
+    private SetAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private Button nextButton;
@@ -73,7 +73,7 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int currentItem = ((SetAdapter) adapter).getActiveItem();
+                int currentItem = adapter.getActiveItem();
                 if (currentItem == routine.size() - 1) {
                     routineOverviewFragmentListener.onWorkoutEnded(System.currentTimeMillis());
                 } else {
@@ -92,17 +92,17 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
         routineOverviewFragmentListener = null;
     }
 
-    public RecyclerView.Adapter getAdapter() {
+    public SetAdapter getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(RecyclerView.Adapter adapter) {
+    public void setAdapter(SetAdapter adapter) {
         this.adapter = adapter;
     }
 
     void activate() {
         //BUG adapter is null on cold start. May apply to switching application
-        ((SetAdapter) adapter).setActiveItem(0);
+        adapter.setActiveItem(0);
         ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
         adapter.notifyDataSetChanged();
         nextButton.setVisibility(View.VISIBLE);
@@ -123,29 +123,35 @@ public class RoutineOverviewFragment extends Fragment implements NextSetCallback
     public void next() {
         try {
             EditText editActualRepsView = Objects.requireNonNull(layoutManager
-                    .findViewByPosition(((SetAdapter) adapter)
+                    .findViewByPosition((adapter)
                             .getActiveItem()))
                     .findViewById(R.id.editActualReps);
             int actualReps = Integer.valueOf(editActualRepsView.getText().toString());
-            routineOverviewFragmentListener.setActualReps(actualReps, ((SetAdapter) adapter).getActiveItem());
+            routineOverviewFragmentListener.setActualReps(actualReps, (adapter).getActiveItem());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ((SetAdapter) adapter).setActiveItem(((SetAdapter) adapter).getActiveItem() + 1);
-        if (((SetAdapter) adapter).getActiveItem() != -1) {
+        (adapter).setActiveItem((adapter).getActiveItem() + 1);
+        if ((adapter).getActiveItem() != -1) {
             ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
         }
         adapter.notifyDataSetChanged();
-        ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset(((SetAdapter) adapter).getActiveItem(), 0);
+        ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset((adapter).getActiveItem(), 0);
 
-        if (((SetAdapter) adapter).getActiveItem() >= routine.size()) {
-            ((SetAdapter) adapter).setActiveItem(-1);
+        if ((adapter).getActiveItem() >= routine.size()) {
+            (adapter).setActiveItem(-1);
             ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(true);
         }
+    }
+
+    @Override
+    public void onDetailsRequested(String exerciseId) {
+        routineOverviewFragmentListener.onDetailsRequested(exerciseId);
     }
 
     interface RoutineOverviewFragmentListener {
         void setActualReps(int actualReps, int position);
         void onWorkoutEnded(long endTime);
+        void onDetailsRequested(String exerciseId);
     }
 }

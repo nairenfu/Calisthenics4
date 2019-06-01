@@ -3,6 +3,7 @@ package com.hylux.calisthenics4.workoutview;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -32,8 +33,13 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     private ActivitiesViewModel activitiesViewModel;
 
     private ArrayList<Fragment> fragments;
-    private ViewPager viewPager;
+    private WorkoutOverviewFragment workoutOverviewFragment;
+    private RoutineOverviewFragment routineOverviewFragment;
+    private HashMap<String, Integer> exerciseIdPositionMap;
+
+    private ToggleSwipeViewPager viewPager;
     private PagerAdapter pagerAdapter;
+
     private Workout workout;
     private HashMap<String, Exercise> exerciseMap;
     private HashMap<String, String> exerciseNameMap;
@@ -48,6 +54,7 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         ActivitiesDatabase activitiesDatabase = ActivitiesDatabase.getDatabase(getApplicationContext());
         activitiesViewModel = new ActivitiesViewModel(getApplication());
 
+        exerciseIdPositionMap = new HashMap<>();
         exerciseMap = new HashMap<>();
         exerciseNameMap = new HashMap<>();
 
@@ -72,7 +79,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("UNIQUE_EXERCISES", uniqueExercises.toString());
 
         if (fragments.size() == 0) {
-            fragments.add(WorkoutOverviewFragment.newInstance(workout, false, null, null));
+            workoutOverviewFragment = WorkoutOverviewFragment.newInstance(workout, false, null, null);
+            fragments.add(workoutOverviewFragment);
         }
         Log.d("FRAGMENTS", fragments.toString());
 
@@ -85,8 +93,16 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     public void onBackPressed() {
         if (viewPager.getCurrentItem() == 0) {
             super.onBackPressed();
-        } else {
+        }
+
+        if (viewPager.getCurrentItem() == 1) {
+            routineOverviewFragment.getAdapter().setActiveItem(-1);
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+            viewPager.setCanSwipe(true);
+        }
+
+        else {
+            viewPager.setCurrentItem(1);
         }
     }
 
@@ -94,10 +110,10 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     public void startWorkout() {
         Log.d("START", "WORKOUT");
         viewPager.setCurrentItem(1, true);
-        ((ToggleSwipeViewPager) viewPager).setCanSwipe(false);
+        viewPager.setCanSwipe(false);
         workout.setStartTime(System.currentTimeMillis());
 
-        ((RoutineOverviewFragment) fragments.get(1)).activate();
+        routineOverviewFragment.activate();
     }
 
     @Override
@@ -115,6 +131,16 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         setResult(RESULT_OK, resultIntent);
         finish();
 
+    }
+
+    @Override
+    public void onDetailsRequested(String exerciseId) {
+        Integer position = exerciseIdPositionMap.get(exerciseId);
+        if (position != null) {
+            viewPager.setCurrentItem(position, true);
+        } else {
+            Toast.makeText(getApplicationContext(), "Sorry, details could not be retrieved.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -150,17 +176,18 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("PROGRESSION_SIZE", String.valueOf(exerciseNameMap.size()));
         Log.d("PROGRESSION_UNIQUE", String.valueOf(uniqueExercises.size()));
         if (exerciseNameMap.size() == uniqueExercises.size()) {
-            fragments.add(RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap));
-//            ((WorkoutOverviewFragment) fragments.get(0)).createProgressionsRecycler(new ProgressionAdapter(progressions, exerciseMap, this));
+            routineOverviewFragment = RoutineOverviewFragment.newInstance(workout.getRoutine(), exerciseNameMap);
+            fragments.add(routineOverviewFragment);
             if (fragments.size() == 0) {
-                fragments.set(0, WorkoutOverviewFragment.newInstance(workout, true, progressions, exerciseMap));
+                workoutOverviewFragment = WorkoutOverviewFragment.newInstance(workout, true, progressions, exerciseMap);
+                fragments.set(0, workoutOverviewFragment);
             } else {
-                ((WorkoutOverviewFragment) fragments.get(0)).setData(progressions, exerciseMap);
+                workoutOverviewFragment.setData(progressions, exerciseMap);
             }
-//            ((WorkoutOverviewFragment) fragments.get(0)).getAdapter().setData(progressions, exerciseMap);
 
             pagerAdapter.notifyDataSetChanged();
             for (String exerciseId : uniqueExercises) {
+                exerciseIdPositionMap.put(exerciseId, fragments.size());
                 fragments.add(ExerciseDetailsFragment.newInstance(exerciseId));
                 pagerAdapter.notifyDataSetChanged();
             }
@@ -184,8 +211,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         for (Set set : workout.getRoutine()) {
             if (Objects.requireNonNull(exerciseMap.get(progressions.get(parentPosition))).getProgression().contains(set.getExerciseId())) {
                 set.setExerciseId(Objects.requireNonNull(exerciseMap.get(set.getExerciseId())).getProgression().get(position));
-                if (fragments.get(1).getClass() == RoutineOverviewFragment.class) {
-                    ((RoutineOverviewFragment) fragments.get(1)).getAdapter().notifyDataSetChanged();
+                if (routineOverviewFragment != null) {
+                    routineOverviewFragment.getAdapter().notifyDataSetChanged();
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.hylux.calisthenics4.workoutview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,21 +25,34 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
     private final Context context;
 
     private ArrayList<String> progressions;
+    private HashMap<Integer, Integer> selectedLevels;
     private HashMap<String, Exercise> exercises;
 
+    @SuppressLint("UseSparseArrays") // If SparseIntArray cannot even be bundled, then what for?
     ProgressionAdapter(Context context) {
         this.context = context;
         progressions = new ArrayList<>();
+        selectedLevels = new HashMap<>();
         exercises = new HashMap<>();
     }
 
-    ProgressionAdapter(ArrayList<String> progressions, HashMap<String, Exercise> exercises, Context context) {
+    @SuppressLint("UseSparseArrays")
+    ProgressionAdapter(ArrayList<String> progressions, HashMap<String, Exercise> exercises, HashMap<Integer, Integer> selectedLevels, Context context) {
         this.progressions = progressions;
+        this.selectedLevels = selectedLevels;
         this.exercises = exercises;
         this.context = context;
 
         Log.d("PROG_ADAP_PROG", progressions.toString());
         Log.d("PROG_ADAP_EX", exercises.toString());
+    }
+
+    HashMap<Integer, Integer> getSelectedLevels() {
+        return selectedLevels;
+    }
+
+    void setSelectedLevels(HashMap<Integer, Integer> selectedLevels) {
+        this.selectedLevels = selectedLevels;
     }
 
     @NonNull
@@ -63,9 +77,16 @@ public class ProgressionAdapter extends RecyclerView.Adapter<ProgressionAdapter.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, progressionList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.progressionSpinner.setAdapter(adapter);
+
+        Integer level = selectedLevels.get(holder.getAdapterPosition());
+        if (level != null) {
+            holder.progressionSpinner.setSelection(level);
+        }
+
         holder.progressionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedLevels.put(holder.getAdapterPosition(), position);
                 ((OnLevelSelectedListener) context).onLevelSelected(holder.getAdapterPosition(), position);
             }
 

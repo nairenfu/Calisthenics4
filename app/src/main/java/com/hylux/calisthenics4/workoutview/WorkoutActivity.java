@@ -8,7 +8,6 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.hylux.calisthenics4.Debug;
 import com.hylux.calisthenics4.R;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
-// TODO Fix: need to save which level of progressions are chosen, as of now onCreateView() will reset selection.
 // TODO Generation: need to sort out how to generate exercise briefs. If not too many will be generated
 // TODO New: explore section: explore exercises and their briefs.
 
@@ -101,7 +99,7 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
             viewPager.setCanSwipe(true);
         }
 
-        else {
+        if (viewPager.getCurrentItem() > 1) {
             viewPager.setCurrentItem(1);
         }
     }

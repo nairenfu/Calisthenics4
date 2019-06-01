@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+// TODO Remember if it is activated or not, and current item. Probably also pause the timer?
 public class RoutineOverviewFragment extends Fragment implements SetAdapterListener {
 
     private RoutineOverviewFragmentListener routineOverviewFragmentListener;

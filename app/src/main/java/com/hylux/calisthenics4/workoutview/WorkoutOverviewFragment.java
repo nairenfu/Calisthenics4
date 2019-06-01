@@ -1,5 +1,6 @@
 package com.hylux.calisthenics4.workoutview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.hylux.calisthenics4.objects.Workout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class WorkoutOverviewFragment extends Fragment {
 
@@ -78,13 +80,16 @@ public class WorkoutOverviewFragment extends Fragment {
         Log.d("WORKOUT_OVERVIEW", "ON_CREATE_VIEW");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_workout_overview, container, false);
 
+        @SuppressLint("UseSparseArrays") HashMap<Integer, Integer> selectedLevels = new HashMap<>();
+
         if (savedInstanceState != null) {
             progressions = savedInstanceState.getStringArrayList("SAVED_PROGRESSIONS");
             exercisesMap = (HashMap<String, Exercise>) savedInstanceState.getSerializable("SAVED_EXERCISES");
+            selectedLevels = (HashMap<Integer, Integer>) savedInstanceState.getSerializable("SAVED_LEVELS");
         }
 
         if ((exercisesMap != null ? exercisesMap.size() : 0) != 0) { // Or if exercises not 0 sized?
-            adapter = new ProgressionAdapter(progressions, exercisesMap, getContext());
+            adapter = new ProgressionAdapter(progressions, exercisesMap, selectedLevels, getContext());
         } else {
             adapter = new ProgressionAdapter(getContext());
         }
@@ -135,6 +140,7 @@ public class WorkoutOverviewFragment extends Fragment {
 
         outState.putStringArrayList("SAVED_PROGRESSIONS", progressions);
         outState.putSerializable("SAVED_EXERCISES", exercisesMap);
+        outState.putSerializable("SAVED_LEVELS", adapter.getSelectedLevels());
         Log.d("WORKOUT_OVERVIEW", "ON_SAVE");
     }
 

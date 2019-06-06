@@ -24,7 +24,6 @@ import com.hylux.calisthenics4.objects.Workout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class WorkoutOverviewFragment extends Fragment {
 
@@ -88,7 +87,7 @@ public class WorkoutOverviewFragment extends Fragment {
             selectedLevels = (HashMap<Integer, Integer>) savedInstanceState.getSerializable("SAVED_LEVELS");
         }
 
-        if ((exercisesMap != null ? exercisesMap.size() : 0) != 0) { // Or if exercises not 0 sized?
+        if ((progressions != null ? progressions.size() : 0) != 0) { // Or if exercises not 0 sized?
             adapter = new ProgressionAdapter(progressions, exercisesMap, selectedLevels, getContext());
         } else {
             adapter = new ProgressionAdapter(getContext());
@@ -98,6 +97,9 @@ public class WorkoutOverviewFragment extends Fragment {
         nameView.setText(workout.getName());
 
         TextView authorView = rootView.findViewById(R.id.authorView);
+//        if (!workout.getAuthorId().equals("")) {
+//            authorView.setText(workout.getAuthorId());
+//        }
         authorView.setText(workout.getAuthorId());
 
         FrameLayout equipmentsContainer = rootView.findViewById(R.id.equipmentsContainer);
@@ -108,7 +110,9 @@ public class WorkoutOverviewFragment extends Fragment {
         }
 
         TextView briefView = rootView.findViewById(R.id.briefView);
-        briefView.setText(workout.getBrief());
+        if (!workout.getBrief().replace(" ", "").equals("")) {
+            briefView.setText(workout.getBrief());
+        }
 
         progressionsRecycler = rootView.findViewById(R.id.progressionRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());

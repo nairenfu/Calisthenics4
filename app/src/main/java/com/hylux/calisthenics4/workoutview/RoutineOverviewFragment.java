@@ -18,6 +18,7 @@ import com.hylux.calisthenics4.R;
 import com.hylux.calisthenics4.objects.Set;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -76,14 +77,28 @@ public class RoutineOverviewFragment extends Fragment implements SetAdapterListe
             public void onClick(View v) {
                 int currentItem = adapter.getActiveItem();
                 if (currentItem == routine.size() - 1) {
-                    routineOverviewFragmentListener.onWorkoutEnded(System.currentTimeMillis());
+                    routineOverviewFragmentListener.onWorkoutEnded(Calendar.getInstance().getTime().getTime());
                 } else {
                     next();
                 }
             }
         });
 
+        if (savedInstanceState != null) {
+            Log.d("BACK", String.valueOf(adapter.getActiveItem()));
+            if (savedInstanceState.getInt("SAVED_CURRENT") != -1) {
+                activate();
+                adapter.setActiveItem(savedInstanceState.getInt("SAVED_CURRENT"));
+            }
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("SAVED_CURRENT", adapter.getActiveItem());
     }
 
     @Override
@@ -124,23 +139,23 @@ public class RoutineOverviewFragment extends Fragment implements SetAdapterListe
     public void next() {
         try {
             EditText editActualRepsView = Objects.requireNonNull(layoutManager
-                    .findViewByPosition((adapter)
+                    .findViewByPosition(adapter
                             .getActiveItem()))
                     .findViewById(R.id.editActualReps);
             int actualReps = Integer.valueOf(editActualRepsView.getText().toString());
-            routineOverviewFragmentListener.setActualReps(actualReps, (adapter).getActiveItem());
+            routineOverviewFragmentListener.setActualReps(actualReps, adapter.getActiveItem());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        (adapter).setActiveItem((adapter).getActiveItem() + 1);
-        if ((adapter).getActiveItem() != -1) {
+        adapter.setActiveItem((adapter).getActiveItem() + 1);
+        if (adapter.getActiveItem() != -1) {
             ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(false);
         }
         adapter.notifyDataSetChanged();
         ((RoutineRecyclerLayoutManager) layoutManager).scrollToPositionWithOffset((adapter).getActiveItem(), 0);
 
-        if ((adapter).getActiveItem() >= routine.size()) {
-            (adapter).setActiveItem(-1);
+        if (adapter.getActiveItem() >= routine.size()) {
+            adapter.setActiveItem(-1);
             ((RoutineRecyclerLayoutManager) layoutManager).setScrollEnabled(true);
         }
     }

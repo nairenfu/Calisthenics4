@@ -206,8 +206,14 @@ public class Workout implements Parcelable {
         dest.writeTypedList(routine);
         dest.writeList(equipments);
         dest.writeList(targetGroups);
-        dest.writeValue(startTime);
-        dest.writeValue(endTime);
+        if (startTime == null) {
+            startTime = -1L;
+        }
+        dest.writeLong(startTime);
+        if (endTime == null) {
+            endTime = -1L;
+        }
+        dest.writeLong(endTime);
     }
 
     @NonNull

@@ -9,9 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hylux.calisthenics4.R;
+import com.hylux.calisthenics4.Utility;
 import com.hylux.calisthenics4.objects.Workout;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ActivitiesViewHolder> {
 
@@ -43,7 +45,8 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Ac
     @Override
     public void onBindViewHolder(@NonNull ActivitiesViewHolder holder, int position) {
         holder.nameView.setText(activities.get(position).getName());
-        holder.startTimeView.setText(String.valueOf(activities.get(position).getStartTime()));
+        Date date = new Date(activities.get(position).getStartTime());
+        holder.startTimeView.setText(Utility.simpleDateFormat.format(date));
     }
 
     @Override

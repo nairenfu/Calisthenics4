@@ -19,6 +19,8 @@ import com.hylux.calisthenics4.roomdatabase.ActivitiesViewModel;
 import com.hylux.calisthenics4.roomdatabase.OnTaskCompletedListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -109,7 +111,8 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
         Log.d("START", "WORKOUT");
         viewPager.setCurrentItem(1, true);
         viewPager.setCanSwipe(false);
-        workout.setStartTime(System.currentTimeMillis());
+
+        workout.setStartTime(Calendar.getInstance().getTime().getTime());
 
         routineOverviewFragment.activate();
     }
@@ -123,6 +126,9 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     @Override
     public void onWorkoutEnded(long endTime) {
         workout.setEndTime(endTime);
+
+        Log.d("TIME", String.valueOf(workout.getStartTime()));
+        Log.d("TIME", String.valueOf(workout.getEndTime()));
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("EXTRA_WORKOUT", workout);
@@ -184,9 +190,10 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
             }
 
             pagerAdapter.notifyDataSetChanged();
+            Log.d("EXERCISES", uniqueExercises.toString());
             for (String exerciseId : uniqueExercises) {
                 exerciseIdPositionMap.put(exerciseId, fragments.size());
-                fragments.add(ExerciseDetailsFragment.newInstance(exerciseId));
+                fragments.add(ExerciseDetailsFragment.newInstance(exerciseMap.get(exerciseId)));
                 pagerAdapter.notifyDataSetChanged();
             }
         }
@@ -206,8 +213,11 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     public void onLevelSelected(int parentPosition, int position) {
         Log.d("SPINNER", "PARENT" + parentPosition + ", POSITION" + position);
 
+        Log.d("EXERCISE_MAP", exerciseMap.toString());
+        Log.d("PROGRESSIONS", progressions.toString());
+
         for (Set set : workout.getRoutine()) {
-            if (Objects.requireNonNull(exerciseMap.get(progressions.get(parentPosition))).getProgression().contains(set.getExerciseId())) {
+            if (progressions.size() > 0 && Objects.requireNonNull(exerciseMap.get(progressions.get(parentPosition))).getProgression().contains(set.getExerciseId())) {
                 set.setExerciseId(Objects.requireNonNull(exerciseMap.get(set.getExerciseId())).getProgression().get(position));
                 if (routineOverviewFragment != null) {
                     routineOverviewFragment.getAdapter().notifyDataSetChanged();

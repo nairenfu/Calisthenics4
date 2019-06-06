@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hylux.calisthenics4.Debug;
@@ -21,7 +23,6 @@ public class ExerciseDetailsFragment extends Fragment {
 
     private StartWorkoutCallback startWorkoutCallback;
 
-    private String exerciseId;
     private Exercise exercise;
 
     @Override
@@ -40,11 +41,10 @@ public class ExerciseDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            exerciseId = getArguments().getString("EXTRA_EXERCISE_ID");
+            exercise = getArguments().getParcelable("EXTRA_EXERCISE");
         } else {
-            exerciseId = "DEFAULT";
+            exercise = Debug.debugExercise(false); // TODO replace to a better default exercise
         }
-        exercise = Debug.debugExercise(false); //TODO get from list of all exercises
     }
 
     @Nullable
@@ -53,16 +53,17 @@ public class ExerciseDetailsFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_exercise_details, container, false);
 
         TextView nameView = rootView.findViewById(R.id.exerciseName);
-        nameView.setText(exerciseId);
+        nameView.setText(exercise.getName());
         //TODO Either on swipe image change step as well, or a RecyclerView/List of image-step pair
 
-        FloatingActionButton startWorkoutButton = rootView.findViewById(R.id.startWorkoutButton);
-        startWorkoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWorkoutCallback.startWorkout();
-            }
-        });
+        RecyclerView stepsRecycler = rootView.findViewById(R.id.stepsRecycler);
+        Log.d("STEPS_RECYCLER", stepsRecycler.toString());
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        stepsRecycler.setLayoutManager(layoutManager);
+
+        StepsAdapter stepsAdapter = new StepsAdapter(exercise.getSteps());
+        stepsRecycler.setAdapter(stepsAdapter);
 
         return rootView;
     }
@@ -73,10 +74,11 @@ public class ExerciseDetailsFragment extends Fragment {
         startWorkoutCallback = null;
     }
 
-    static ExerciseDetailsFragment newInstance(String exerciseId) {
+    static ExerciseDetailsFragment newInstance(Exercise exercise) {
 
         Bundle args = new Bundle();
-        args.putString("EXTRA_EXERCISE_ID", exerciseId);
+        args.putParcelable("EXTRA_EXERCISE", exercise);
+        Log.d("EXTRA_EXERCISE", exercise.toString());
 
         ExerciseDetailsFragment fragment = new ExerciseDetailsFragment();
         fragment.setArguments(args);

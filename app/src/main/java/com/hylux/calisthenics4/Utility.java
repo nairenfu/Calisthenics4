@@ -1,7 +1,11 @@
 package com.hylux.calisthenics4;
 
+import android.content.res.Resources;
+import android.provider.Settings;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Random;
 
 public class Utility {
@@ -20,4 +24,6 @@ public class Utility {
         Log.d("RANDOM_ID", "of length " + length + " generated: " + stringBuilder.toString());
         return stringBuilder.toString();
     }
+
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy 'at' HH:mm:ss", Resources.getSystem().getConfiguration().locale);
 }

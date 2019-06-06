@@ -15,4 +15,7 @@
     <string name="reps">reps</string>
     <string name="time">time</string>
     <string name="details">details</string>
+    <string name="select_progressions_title">Select Progression Levels</string>
+    <string name="default_brief">There\'s no brief description here...</string>
+    <string name="default_author">Anonymous</string>
 </resources>

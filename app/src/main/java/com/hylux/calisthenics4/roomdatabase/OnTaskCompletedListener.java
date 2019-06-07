@@ -11,4 +11,5 @@ public interface OnTaskCompletedListener {
     void onGetExerciseFromId(Exercise exercise);
     void onGetWorkoutFromId(Workout workout);
     void onGetAllWorkouts(ArrayList<Workout> workouts);
+    void onGetWorkoutsByAuthor(ArrayList<Workout> workouts);
 }

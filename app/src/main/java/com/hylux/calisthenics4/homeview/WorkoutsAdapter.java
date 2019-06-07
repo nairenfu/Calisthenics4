@@ -1,5 +1,6 @@
 package com.hylux.calisthenics4.homeview;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,7 @@ public class WorkoutsAdapter extends RecyclerView.Adapter<WorkoutsAdapter.Workou
 
     public void setWorkouts(ArrayList<Workout> workouts) {
         this.workouts = workouts;
+        Log.d("WORKOUTS_ADAPTER", workouts.toString());
         notifyDataSetChanged();
     }
 

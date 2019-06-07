@@ -16,6 +16,10 @@
     <string name="time">time</string>
     <string name="details">details</string>
     <string name="select_progressions_title">Select Progression Levels</string>
-    <string name="default_brief">There\'s no brief description here...</string>
+    <string name="default_brief">There\'s no brief description here…</string>
     <string name="default_author">Anonymous</string>
+    <string name="starred_text">Starred</string>
+    <string name="top_text">Top Selected</string>
+    <string name="created_text">You Created</string>
+    <string name="start_title">Start New Workout</string>
 </resources>

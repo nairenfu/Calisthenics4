@@ -249,6 +249,40 @@ class ActivitiesRepository {
         }
     }
 
+    void incrementWorkout(final String workoutId, final String authorId) {
+        fireStore.collection("meta")
+                .document(workoutId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            Long votesLong = documentSnapshot.getLong("votes");
+                            int votes = votesLong != null ? votesLong.intValue() : 0;
+                            fireStore.collection("meta")
+                                    .document(workoutId)
+                                    .update("votes", votes + 1)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("FIRE_STORE", "DocumentSnapshot successfully written!");
+                                        }
+                                    });
+                        } else {
+                            fireStore.collection("meta")
+                                    .document(workoutId)
+                                    .set(new MetaWorkout(workoutId, authorId, false, 1))
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("FIRE_STORE", "DocumentSnapshot successfully written!");
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
     void getWorkoutById(String id, final OnTaskCompletedListener listener) {
         fireStore.collection("workouts")
                 .document(id)
@@ -259,6 +293,23 @@ class ActivitiesRepository {
                         Workout workout = new Workout((HashMap<String, Object>) Objects.requireNonNull(documentSnapshot.getData()));
                         Log.d("WORKOUT", workout.toString());
                         listener.onGetWorkoutFromId(workout);
+                    }
+                });
+    }
+
+    void getWorkoutsByAuthor(String authorId, final OnTaskCompletedListener listener) {
+        fireStore.collection("workouts")
+                .whereEqualTo("authorId", authorId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<Workout> workouts = new ArrayList<>();
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                            workouts.add(new Workout((HashMap<String, Object>) Objects.requireNonNull(snapshot.getData())));
+                        }
+                        Log.d("FIRE_STORE_USER", workouts.toString());
+                        listener.onGetWorkoutsByAuthor(workouts);
                     }
                 });
     }

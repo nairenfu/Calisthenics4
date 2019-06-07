@@ -205,6 +205,11 @@ public class WorkoutActivity extends FragmentActivity implements OnTaskCompleted
     }
 
     @Override
+    public void onGetWorkoutsByAuthor(ArrayList<Workout> workouts) {
+
+    }
+
+    @Override
     public void onGetAllWorkouts(ArrayList<Workout> workouts) {
 
     }

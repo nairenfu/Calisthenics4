@@ -37,6 +37,7 @@ public class CreateWorkoutActivity extends AppCompatActivity implements CreateWo
         setContentView(R.layout.activity_create_workout);
 
         workout = new Workout();
+        workout.setAuthorId("user"); // TODO change to UserID if logged in
         HashMap<String, String> exerciseNamesMap = new HashMap<>();
 
         // Set up Exercises list

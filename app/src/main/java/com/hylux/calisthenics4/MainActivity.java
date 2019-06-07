@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
         firestoreViewModel = new FirestoreViewModel(getApplication());
         firestoreViewModel.getAllExercises(this);
+        firestoreViewModel.getWorkoutsByAuthorAsync("user", this);
         firestoreViewModel.getAllWorkouts(this); // Maybe should put this behind
 
         //Instantiate fragments
@@ -115,22 +116,43 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
     @Override
     public void onGetWorkoutFromId(Workout workout) {
-        Intent debugActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
-        debugActivityIntent.putExtra("EXTRA_WORKOUT", workout);
+        Intent startWorkoutActivityIntent = new Intent(MainActivity.this, WorkoutActivity.class);
+        startWorkoutActivityIntent.putExtra("EXTRA_WORKOUT", workout);
 
         if (chooseWorkoutFragment != null) {
             chooseWorkoutFragment.setLoading(false);
         }
 
-        startActivityForResult(debugActivityIntent, NEW_ACTIVITY_REQUEST);
+        firestoreViewModel.incrementWorkout(workout);
+
+        startActivityForResult(startWorkoutActivityIntent, NEW_ACTIVITY_REQUEST);
+    }
+
+    @Override
+    public void onGetWorkoutsByAuthor(ArrayList<Workout> workouts) {
+        if (chooseWorkoutFragment != null) {
+            chooseWorkoutFragment.setUserWorkouts(workouts);
+            if (chooseWorkoutFragment.getUserCreatedAdapter() != null) {
+                chooseWorkoutFragment.getUserCreatedAdapter().setWorkouts(workouts);
+            } else {
+                Bundle savedWorkouts = new Bundle();
+                savedWorkouts.putParcelableArrayList("SAVED_USER_WORKOUTS", workouts);
+                chooseWorkoutFragment.onSaveInstanceState(savedWorkouts);
+            }
+        }
     }
 
     @Override
     public void onGetAllWorkouts(ArrayList<Workout> workouts) {
         if (chooseWorkoutFragment != null) {
-            Log.d("CWF_ADAPTER", chooseWorkoutFragment.getAdapter().toString()); // This is null on refresh.
-            Log.d("CWF_WORKOUTS", workouts.toString());
-            chooseWorkoutFragment.getAdapter().setWorkouts(workouts);
+            chooseWorkoutFragment.setWorkouts(workouts);
+            if (chooseWorkoutFragment.getAdapter() != null) {
+                chooseWorkoutFragment.getAdapter().setWorkouts(workouts);
+            } else {
+                Bundle savedWorkouts = new Bundle();
+                savedWorkouts.putParcelableArrayList("SAVED_WORKOUTS", workouts);
+                chooseWorkoutFragment.onSaveInstanceState(savedWorkouts);
+            }
         }
     }
 

@@ -15,6 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:animateLayoutChanges="true"
+        app:cardCornerRadius="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,6 +24,8 @@
             android:id="@+id/horizontalLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -31,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 tools:text="Pushup" />
 
             <ToggleButton
@@ -45,14 +49,14 @@
                 android:id="@+id/reps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/default_reps_num"
-                android:hint="@string/default_reps_num"
                 android:autofillHints="@string/actual_reps"
                 android:focusedByDefault="false"
+                android:hint="@string/default_reps_num"
                 android:imeOptions="actionDone"
-                tools:targetApi="o"
-                android:inputType="number" />
+                android:inputType="number"
+                android:padding="16dp"
+                android:text="@string/default_reps_num"
+                tools:targetApi="o" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

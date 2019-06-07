@@ -22,4 +22,7 @@
     <string name="top_text">Top Selected</string>
     <string name="created_text">You Created</string>
     <string name="start_title">Start New Workout</string>
+    <string name="history_title">History</string>
+    <string name="expand_exercises">Expand Exercises</string>
+    <string name="exercises_button">Exercises Button</string>
 </resources>

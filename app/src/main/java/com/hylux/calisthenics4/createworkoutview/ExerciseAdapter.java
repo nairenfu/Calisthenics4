@@ -68,6 +68,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         ExerciseViewHolder(@NonNull TextView itemView) {
             super(itemView);
             exerciseName = itemView;
+            exerciseName.setPadding(16, 8, 8, 16);
         }
     }
 }

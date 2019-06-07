@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
 
         firestoreViewModel = new FirestoreViewModel(getApplication());
         firestoreViewModel.getAllExercises(this);
+        activitiesViewModel.getRecentActivities(20, this);
         firestoreViewModel.getWorkoutsByAuthorAsync("user", this);
         firestoreViewModel.getAllWorkouts(this); // Maybe should put this behind
 
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompletedLi
     @Override
     public void onRefresh() {
         if (recentActivitiesFragment != null) {
-            activitiesViewModel.getRecentActivities(5, this);
+            activitiesViewModel.getRecentActivities(20, this);
         }
     }
 }

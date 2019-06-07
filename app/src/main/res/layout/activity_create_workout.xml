@@ -17,6 +17,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        app:cardCornerRadius="24dp"
         app:layout_constraintBottom_toTopOf="@+id/routineContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,6 +112,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/menuImage"
+                android:layout_gravity="end"
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_menu_black_24dp"
+                android:contentDescription="@string/exercises_button" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/exercisesRecycler"
                 android:layout_width="match_parent"
@@ -122,7 +132,9 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:alpha="0"
-                android:visibility="visible" />
+                android:visibility="visible" >
+
+            </androidx.cardview.widget.CardView>
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

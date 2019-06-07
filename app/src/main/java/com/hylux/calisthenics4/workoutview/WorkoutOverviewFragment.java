@@ -119,6 +119,12 @@ public class WorkoutOverviewFragment extends Fragment {
         progressionsRecycler.setLayoutManager(layoutManager);
         progressionsRecycler.setAdapter(adapter);
 
+        View progressionsCard = rootView.findViewById(R.id.progressionsCard);
+        if (progressions.size() == 0) {
+            progressionsCard.setVisibility(View.GONE);
+        } else {
+            progressionsCard.setVisibility(View.VISIBLE);
+        }
 
         FloatingActionButton startWorkoutButton = rootView.findViewById(R.id.startWorkoutButton);
         startWorkoutButton.setOnClickListener(new View.OnClickListener() {

@@ -17,7 +17,7 @@ public interface ActivityDao {
     @Query("SELECT * FROM activities")
     LiveData<List<Workout>> getAll();
 
-    @Query("SELECT * FROM activities ORDER BY startTime LIMIT :n")
+    @Query("SELECT * FROM activities ORDER BY startTime DESC LIMIT :n")
     List<Workout> getRecentActivities(int n);
 
     @Insert

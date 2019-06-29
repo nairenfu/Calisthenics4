@@ -1,5 +1,6 @@
 package com.hylux.calisthenics4.homeview;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +44,17 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Ac
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ActivitiesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ActivitiesViewHolder holder, int position) {
         holder.nameView.setText(activities.get(position).getName());
         Date date = new Date(activities.get(position).getStartTime());
         holder.startTimeView.setText(Utility.simpleDateFormat.format(date));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("RECENT_SELECTED", String.valueOf(activities.get(holder.getAdapterPosition())));
+            }
+        });
     }
 
     @Override
